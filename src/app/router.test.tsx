@@ -1,6 +1,7 @@
 import { screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { renderApp } from "@/test/render-app";
+import { testIds } from "@/ui/utils/testIds";
 
 describe("application routing", () => {
   it("redirects the root URL to the alerts page", async () => {
@@ -28,7 +29,9 @@ describe("application routing", () => {
     expect(
       await screen.findByRole("heading", { name: "Alert details" }),
     ).toBeVisible();
-    expect(screen.getByText("urn:oid:test.complete")).toBeVisible();
+    expect(
+      screen.getByTestId(testIds.alerts.details.alertId),
+    ).toHaveTextContent("urn:oid:test.complete");
   });
 
   it("shows a safe fallback for an unknown URL", async () => {

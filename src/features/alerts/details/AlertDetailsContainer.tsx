@@ -1,5 +1,6 @@
 import { Link, Stack, Typography } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
+import { testIds } from "@/ui/utils/testIds";
 
 type AlertDetailsContainerProps = Readonly<{
   alertId: string;
@@ -11,7 +12,9 @@ export function AlertDetailsContainer({ alertId }: AlertDetailsContainerProps) {
       <Typography component="h1" variant="h3">
         Alert details
       </Typography>
-      <Typography>{alertId}</Typography>
+      <Typography data-testid={testIds.alerts.details.alertId}>
+        {alertId}
+      </Typography>
       <Link component={RouterLink} to="/alerts">
         Back to alerts
       </Link>

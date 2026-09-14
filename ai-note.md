@@ -9,3 +9,7 @@ Since inside a company you practice pair programming, I wanted to sort of simula
 ## Project setup
 
 As said, started to bring some helpful setups that I usually use in my projects. As for example `pnpm fix` command, that will run all the checks and formatting in one command. Some notes and instructions to AI about project structure so it can follow and verify that I am following the rules. Also, I used AI to generate some boilerplate code for features, containers, views, and components. I also used AI to generate some tests and stories for components.
+
+## Dev process
+
+For on a fresh project (right now after stage 2) I used AI to write 80% of the code. I tell what to do, it does. I have to fight it a bit on a project structure, even that I added perfect example in [project-structure.md](docs/project-structure.md). So from now on I'm even more careful, since right now AI has options to randomly move into direction that I don't want, so I have sort of restraint it's 'field of vision'.
