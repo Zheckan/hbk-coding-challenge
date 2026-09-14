@@ -2,6 +2,8 @@
 
 Product and technical decisions live in [DESIGN.md](./DESIGN.md). This file tracks the implementation order and progress.
 
+Docs: https://www.weather.gov/documentation/services-web-api
+
 ## Core requirements
 
 - Build the application with React and TypeScript.
@@ -26,13 +28,13 @@ Add tests with each stage. Run `pnpm fix` before marking a stage complete.
 
 ### Stage 1: NWS API exploration and data layer
 
-- [ ] Check the official NWS documentation and call the live alert list and detail endpoints.
-- [ ] Record the query parameters, date formats, pagination links, required headers, and error responses that we use.
-- [ ] Save representative list and detail responses as test fixtures, including missing optional fields.
-- [ ] Define the application `Alert`, alert query, and paginated result types.
-- [ ] Validate unknown responses with Zod and convert NWS GeoJSON into application types.
-- [ ] Implement list and detail request functions with request cancellation and useful errors.
-- [ ] Test query building, response conversion, nullable fields, invalid responses, and pagination parsing.
+- [x] Check the official NWS documentation and call the live alert list and detail endpoints.
+- [x] Capture the API behavior in types and tests, with small comments only where the reason is not clear from the code.
+- [x] Save representative API response data as a test fixture, including missing optional fields.
+- [x] Define the application `Alert`, alert query, and paginated result types.
+- [x] Validate unknown responses with Zod and convert NWS GeoJSON into application types.
+- [x] Implement list and detail request functions with request cancellation and useful errors.
+- [x] Test query building, response conversion, nullable fields, invalid responses, and pagination parsing.
 
 **Complete when:** the list and detail functions return validated application data from fixtures, and a live smoke check confirms the endpoints still match our assumptions.
 

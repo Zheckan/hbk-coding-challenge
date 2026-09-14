@@ -1,0 +1,62 @@
+{
+  "@context": {
+    "@version": "1.1"
+  },
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "https://api.weather.gov/alerts/urn:oid:test.complete",
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "id": "urn:oid:test.complete",
+        "areaDesc": "Daviess, MO; DeKalb, MO",
+        "sent": "2026-09-14T08:29:00-05:00",
+        "effective": "2026-09-14T08:29:00-05:00",
+        "onset": "2026-09-14T08:29:00-05:00",
+        "expires": "2026-09-14T13:30:00-05:00",
+        "ends": "2026-09-14T13:30:00-05:00",
+        "status": "Actual",
+        "messageType": "Update",
+        "severity": "Severe",
+        "certainty": "Likely",
+        "urgency": "Immediate",
+        "event": "Flash Flood Warning",
+        "sender": "w-nws.webmaster@noaa.gov",
+        "senderName": "NWS Kansas City/Pleasant Hill MO",
+        "headline": "Flash Flood Warning issued September 14 at 8:29AM CDT",
+        "description": "Heavy rain has caused flash flooding.",
+        "instruction": "Turn around, don't drown when encountering flooded roads.",
+        "web": "http://www.weather.gov",
+        "extraField": "The application ignores fields it does not use."
+      }
+    },
+    {
+      "id": "https://api.weather.gov/alerts/urn:oid:test.nullable",
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "id": "urn:oid:test.nullable",
+        "areaDesc": "Lake County",
+        "sent": "2026-09-14T12:00:00+00:00",
+        "effective": "2026-09-14T12:00:00+00:00",
+        "expires": "2026-09-14T18:00:00+00:00",
+        "status": "Actual",
+        "messageType": "Alert",
+        "severity": "Unknown",
+        "certainty": "Unknown",
+        "urgency": "Unknown",
+        "event": "Special Weather Statement",
+        "sender": "w-nws.webmaster@noaa.gov",
+        "senderName": "National Weather Service",
+        "description": "Conditions may change during the afternoon.",
+        "web": "http://www.weather.gov"
+      }
+    }
+  ],
+  "title": "Watches, warnings, and advisories",
+  "updated": "2026-09-14T13:30:11+00:00",
+  "pagination": {
+    "next": "https://api.weather.gov/alerts?status%5B0%5D=actual&limit=2&cursor=next-page-token"
+  }
+}
