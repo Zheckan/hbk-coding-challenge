@@ -50,6 +50,9 @@ function buildTestIds(
 
 export const testIds = defineTestIds({
   alerts: {
+    list: {
+      row: (alertId: string) => alertId,
+    },
     details: {
       alertId: true,
     },

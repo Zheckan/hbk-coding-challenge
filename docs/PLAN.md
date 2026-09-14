@@ -51,12 +51,12 @@ Add tests with each stage. Run `pnpm fix` before marking a stage complete.
 
 ### Stage 3: Alerts table
 
-- [ ] Load alerts through TanStack Query using the Stage 1 data module.
-- [ ] Format API timestamps in the browser's local time zone.
-- [ ] Build a semantic MUI table showing severity, event, headline, affected area, issued time, expiry time, and a details link.
-- [ ] Show severity as text with supporting color, never color alone.
-- [ ] Add a clear details link for each alert.
-- [ ] Test the table headings, alert values, local date display, and details links.
+- [x] Load alerts through TanStack Query using the Stage 1 data module.
+- [x] Format API timestamps in the browser's local time zone.
+- [x] Build a semantic MUI table showing severity, event, headline, affected area, issued time, expiry time, and a details link.
+- [x] Show severity as text with supporting color, never color alone.
+- [x] Add a clear details link for each alert.
+- [x] Test the table headings, alert values, local date display, and details links.
 
 **Complete when:** a real NWS response can appear as normalized rows in the basic table without exposing raw GeoJSON to the UI.
 
@@ -86,7 +86,7 @@ Add tests with each stage. Run `pnpm fix` before marking a stage complete.
 
 ### Stage 6: Pagination and interface states
 
-- [ ] Show table-shaped skeletons during the first request.
+- [x] Show table-shaped skeletons during the first request.
 - [ ] Keep existing rows visible with an updating indicator while filters reload data.
 - [ ] Add clear empty, invalid-range, request-error, rate-limit, and not-found states.
 - [ ] Add retry actions; retry network, rate-limit, and server failures once, but do not retry other client errors.

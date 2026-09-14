@@ -12,4 +12,4 @@ As said, started to bring some helpful setups that I usually use in my projects.
 
 ## Dev process
 
-For on a fresh project (right now after stage 2) I used AI to write 80% of the code. I tell what to do, it does. I have to fight it a bit on a project structure, even that I added perfect example in [project-structure.md](docs/project-structure.md). So from now on I'm even more careful, since right now AI has options to randomly move into direction that I don't want, so I have sort of restraint it's 'field of vision'.
+On a fresh project (right now I'm writing this after stage 2), I used AI to write 80% of the code. I tell it what to do, and it does it. But I have to fight it a bit on the project structure, even though I added a perfect example in [project-structure.md](docs/project-structure.md). Because the project is small, it cannot gather the project's structure and use it as an example, so it invents new patterns. So from now on, I'm even more careful, since the AI can easily drift in directions I don't want, forcing me to somewhat restrain its 'field of vision'.

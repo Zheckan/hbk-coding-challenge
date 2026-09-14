@@ -1,14 +1,24 @@
-import { Stack, Typography } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
+import { fetchAlerts } from "@/features/alerts/common/api/nws-alerts";
+import { AlertsView } from "./views/AlertsView";
+
+const alertsQueryKey = ["alerts", "list"] as const;
 
 export function AlertsContainer() {
+  const alertsQuery = useQuery({
+    queryKey: alertsQueryKey,
+    queryFn: ({ signal }) => fetchAlerts({}, { signal }),
+  });
+
+  if (alertsQuery.isPending) {
+    return <AlertsView state={{ kind: "loading" }} />;
+  }
+
+  if (alertsQuery.isError) {
+    return <AlertsView state={{ kind: "error" }} />;
+  }
+
   return (
-    <Stack spacing={1}>
-      <Typography component="h1" variant="h3">
-        Weather alerts
-      </Typography>
-      <Typography color="text.secondary" variant="body1">
-        National Weather Service alert explorer
-      </Typography>
-    </Stack>
+    <AlertsView state={{ kind: "ready", alerts: alertsQuery.data.alerts }} />
   );
 }
