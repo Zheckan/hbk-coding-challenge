@@ -144,7 +144,7 @@ A Page Object should:
 
 Keep Page Objects close to the page or feature they cover:
 
-````text
+```text
 features/
   feature/
     Feature.tsx
@@ -164,7 +164,7 @@ test/
     BasePageObject.ts
     fixtures/
     helpers/
-````
+```
 
 Use a shared base Page Object for cross-application behavior such as:
 
@@ -175,23 +175,23 @@ Use a shared base Page Object for cross-application behavior such as:
 
 A Page Object may be organized into three sections:
 
-````ts
+```ts
 class FeaturePageObject extends BasePageObject {
   // locators
   // actions
   // assertions
 }
-````
+```
 
 Tests should describe user behavior and expected outcomes:
 
-````ts
-const feature = new FeaturePageObject(testContext)
+```ts
+const feature = new FeaturePageObject(testContext);
 
-await feature.openSettings()
-await feature.changeOption('advanced')
-await feature.expectSettingsSaved()
-````
+await feature.openSettings();
+await feature.changeOption("advanced");
+await feature.expectSettingsSaved();
+```
 
 Avoid putting the following in Page Objects:
 
@@ -220,7 +220,7 @@ The registry should:
 
 Example:
 
-````ts
+```ts
 export const testIds = defineTestIds({
   component: {
     AssetSelector: {
@@ -234,26 +234,24 @@ export const testIds = defineTestIds({
       balance: true,
     },
   },
-})
-````
+});
+```
 
 Application components use the registry:
 
-````tsx
+```tsx
 <div data-testid={testIds.feature.summary.container}>
-  <span data-testid={testIds.feature.summary.balance}>
-    {balance}
-  </span>
+  <span data-testid={testIds.feature.summary.balance}>{balance}</span>
 </div>
-````
+```
 
 Page Objects use the same registry:
 
-````ts
+```ts
 locateBalance(): Locator {
   return this.page.getByTestId(testIds.feature.summary.balance)
 }
-````
+```
 
 Prefer accessible locators such as roles, labels, and visible text when they
 represent the intended public interface. Use test IDs when an element needs a
@@ -281,7 +279,7 @@ Objects and tests.
 
 The dependency direction should be:
 
-````text
+```text
 E2E test
    ↓
 Page Object
@@ -289,4 +287,4 @@ Page Object
 roles / labels / testIds
    ↓
 rendered application
-````
+```
