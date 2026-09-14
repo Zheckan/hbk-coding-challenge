@@ -95,7 +95,7 @@ src/
 - Keep shared interfaces small and let modules hide implementation complexity
   behind hooks, containers, or utility functions.
 
-Hook ownership and data flow:
+### Hook ownership and data flow:
 - Feature containers own feature-level hooks, data fetching, state, and side effects.
 - Containers pass hook results—state, derived data, and event handlers—to views and presentational components through props.
 - Views should focus on rendering and user interaction wiring.
