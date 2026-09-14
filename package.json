@@ -17,9 +17,11 @@
     "build": "tsc -b && vite build",
     "typecheck": "tsc -b --pretty false",
     "lint": "eslint .",
+    "test": "vitest run --passWithNoTests",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "check": "pnpm format:check && pnpm lint && pnpm build",
+    "check": "pnpm format:check && pnpm lint && pnpm test && pnpm build",
+    "fix": "pnpm format && pnpm lint --fix && pnpm check",
     "preview": "vite preview"
   },
   "dependencies": {
