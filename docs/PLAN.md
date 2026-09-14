@@ -1,6 +1,6 @@
 # Project plan
 
-Product and technical decisions live in [DESIGN.md](./DESIGN.md). This file tracks the implementation order and progress.
+This file tracks the implementation order and progress.
 
 Docs: https://www.weather.gov/documentation/services-web-api
 
@@ -40,12 +40,12 @@ Add tests with each stage. Run `pnpm fix` before marking a stage complete.
 
 ### Stage 2: Application structure, providers, and routing
 
-- [ ] Configure the `@/` import alias in Vite and TypeScript.
-- [ ] Move the existing app and theme files into the planned structure as the code needs it.
-- [ ] Keep the MUI theme at the app root and add the TanStack Query provider.
-- [ ] Add routes for the alerts list and alert details, plus a safe fallback route.
-- [ ] Create thin route pages and feature containers for both routes.
-- [ ] Configure Testing Library and MSW with shared test rendering helpers.
+- [x] Configure the `@/` import alias in Vite and TypeScript.
+- [x] Move the existing app and theme files into the planned structure as the code needs it.
+- [x] Keep app-wide providers at the app root and the MUI theme in the UI layer.
+- [x] Add routes for the alerts list and alert details, plus a safe fallback route.
+- [x] Create thin route pages and feature containers for both routes.
+- [x] Configure Testing Library and MSW with shared test rendering helpers.
 
 **Complete when:** both routes render through the real providers, direct navigation works, and a routing test passes.
 
@@ -53,7 +53,7 @@ Add tests with each stage. Run `pnpm fix` before marking a stage complete.
 
 - [ ] Load alerts through TanStack Query using the Stage 1 data module.
 - [ ] Format API timestamps in the browser's local time zone.
-- [ ] Build a semantic MUI table with the columns defined in the design document.
+- [ ] Build a semantic MUI table showing severity, event, headline, affected area, issued time, expiry time, and a details link.
 - [ ] Show severity as text with supporting color, never color alone.
 - [ ] Add a clear details link for each alert.
 - [ ] Test the table headings, alert values, local date display, and details links.
@@ -89,7 +89,7 @@ Add tests with each stage. Run `pnpm fix` before marking a stage complete.
 - [ ] Show table-shaped skeletons during the first request.
 - [ ] Keep existing rows visible with an updating indicator while filters reload data.
 - [ ] Add clear empty, invalid-range, request-error, rate-limit, and not-found states.
-- [ ] Add retry actions and retry only the transient failures defined in the design document.
+- [ ] Add retry actions; retry network, rate-limit, and server failures once, but do not retry other client errors.
 - [ ] Follow the NWS pagination cursor with a Load more action.
 - [ ] Show how many alerts are loaded without implying that unseen results were sorted or searched.
 - [ ] Test every state and the multi-page loading flow with MSW.

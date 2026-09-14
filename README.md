@@ -26,5 +26,4 @@ feature.
 
 ## Documentation
 
-- [Application design](./docs/DESIGN.md)
 - [Domain language](./docs/CONTEXT.md)

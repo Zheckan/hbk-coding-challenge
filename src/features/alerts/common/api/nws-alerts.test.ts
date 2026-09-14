@@ -1,7 +1,7 @@
 import { HttpResponse, delay, http } from "msw";
-import { setupServer } from "msw/node";
-import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
-import listFixture from "../../../test/fixtures/nws-alert-list.json";
+import { describe, expect, it } from "vitest";
+import { server } from "@/test/server";
+import listFixture from "@/test/fixtures/nws-alert-list.json";
 import { NwsApiError, fetchAlert, fetchAlerts } from "./nws-alerts";
 
 const detailFixture = listFixture.features[0];
@@ -9,18 +9,6 @@ const detailFixture = listFixture.features[0];
 if (detailFixture === undefined) {
   throw new Error("The alert list fixture must contain an alert");
 }
-
-const server = setupServer();
-
-beforeAll(() => {
-  server.listen({ onUnhandledRequest: "error" });
-});
-afterEach(() => {
-  server.resetHandlers();
-});
-afterAll(() => {
-  server.close();
-});
 
 describe("fetchAlerts", () => {
   it("requests filters and returns normalized alerts with the next cursor", async () => {
