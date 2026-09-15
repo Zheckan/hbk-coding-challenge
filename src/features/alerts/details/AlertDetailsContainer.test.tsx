@@ -184,4 +184,31 @@ describe('alert details', () => {
     expect(screen.getByText('No headline provided')).toBeVisible()
     expect(screen.getAllByText('Not provided by NWS')).toHaveLength(4)
   })
+
+  it('explains when a direct alert URL no longer exists', async () => {
+    server.use(
+      http.get('https://api.weather.gov/alerts/*', () =>
+        HttpResponse.json(
+          {
+            title: 'Not Found',
+            status: 404,
+            detail: 'The alert could not be found.',
+          },
+          { status: 404 },
+        ),
+      ),
+    )
+
+    renderApp({ initialEntries: ['/alerts/missing-alert?area=MO'] })
+
+    expect(
+      await screen.findByRole('alert', { name: 'Alert not found' }),
+    ).toHaveTextContent('This alert is no longer available from NWS.')
+    expect(
+      screen.getByRole('link', { name: 'Back to alerts' }),
+    ).toHaveAttribute('href', '/alerts?area=MO')
+    expect(
+      screen.queryByRole('button', { name: 'Try again' }),
+    ).not.toBeInTheDocument()
+  })
 })

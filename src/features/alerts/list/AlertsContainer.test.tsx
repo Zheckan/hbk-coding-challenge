@@ -40,6 +40,168 @@ describe('alerts list', () => {
     expect(within(loadingTable).getAllByRole('row').length).toBeGreaterThan(1)
   })
 
+  it('keeps the current alerts visible while filters update', async () => {
+    const user = userEvent.setup()
+    let finishFilteredRequest: (() => void) | undefined
+    const filteredRequest = new Promise<void>((resolve) => {
+      finishFilteredRequest = resolve
+    })
+
+    server.use(
+      http.get('https://api.weather.gov/alerts', async ({ request }) => {
+        if (new URL(request.url).searchParams.get('area') === 'KS') {
+          await filteredRequest
+        }
+
+        return HttpResponse.json(listFixture)
+      }),
+    )
+
+    renderApp({ initialEntries: ['/alerts'] })
+
+    const table = await screen.findByRole('table', { name: 'Weather alerts' })
+    await user.selectOptions(
+      screen.getByRole('combobox', { name: 'Area code' }),
+      'KS',
+    )
+
+    expect(table).toBeVisible()
+    expect(within(table).getByText('Flash Flood Warning')).toBeVisible()
+    expect(
+      screen.getByRole('status', { name: 'Updating weather alerts' }),
+    ).toBeVisible()
+
+    finishFilteredRequest?.()
+  })
+
+  it('shows a clear message when the loaded results are empty', async () => {
+    server.use(
+      http.get('https://api.weather.gov/alerts', () =>
+        HttpResponse.json({ ...listFixture, features: [], pagination: {} }),
+      ),
+    )
+
+    renderApp({ initialEntries: ['/alerts'] })
+
+    expect(
+      await screen.findByRole('status', { name: 'No weather alerts' }),
+    ).toHaveTextContent('No matching alerts in the loaded results.')
+    expect(screen.queryByRole('table', { name: 'Weather alerts' })).toBeNull()
+  })
+
+  it('can continue loading after the current pages have no search matches', async () => {
+    const user = userEvent.setup()
+    const nextPageFeature = {
+      ...completeFeature,
+      id: 'https://api.weather.gov/alerts/coastal-alert',
+      properties: {
+        ...completeFeature.properties,
+        id: 'coastal-alert',
+        event: 'Coastal Flood Warning',
+      },
+    }
+
+    server.use(
+      http.get('https://api.weather.gov/alerts', ({ request }) =>
+        new URL(request.url).searchParams.get('cursor') === 'next-page-token'
+          ? HttpResponse.json({
+              ...listFixture,
+              features: [nextPageFeature],
+              pagination: {},
+            })
+          : HttpResponse.json(listFixture),
+      ),
+    )
+
+    renderApp({ initialEntries: ['/alerts?q=coastal'] })
+
+    expect(
+      await screen.findByRole('status', { name: 'No weather alerts' }),
+    ).toBeVisible()
+
+    await user.click(screen.getByRole('button', { name: 'Load more alerts' }))
+
+    expect(await screen.findByText('Coastal Flood Warning')).toBeVisible()
+    expect(
+      screen.getByRole('status', { name: 'Loaded alert count' }),
+    ).toHaveTextContent('3 alerts loaded. Showing 1 matching alerts.')
+  })
+
+  it('explains rate limiting, retries once, and lets the user try again', async () => {
+    const user = userEvent.setup()
+    let requestCount = 0
+
+    server.use(
+      http.get('https://api.weather.gov/alerts', () => {
+        requestCount += 1
+
+        if (requestCount <= 2) {
+          return HttpResponse.json(
+            {
+              title: 'Rate limit exceeded',
+              status: 429,
+              detail: 'Wait before trying this request again.',
+            },
+            { status: 429 },
+          )
+        }
+
+        return HttpResponse.json(listFixture)
+      }),
+    )
+
+    renderApp({ initialEntries: ['/alerts'] })
+
+    expect(
+      await screen.findByRole(
+        'alert',
+        { name: 'NWS rate limit reached' },
+        { timeout: 4_000 },
+      ),
+    ).toHaveTextContent(
+      'The National Weather Service is receiving too many requests.',
+    )
+    expect(requestCount).toBe(2)
+
+    await user.click(screen.getByRole('button', { name: 'Try again' }))
+
+    expect(
+      await screen.findByRole('table', { name: 'Weather alerts' }),
+    ).toBeVisible()
+    expect(requestCount).toBe(3)
+  })
+
+  it('does not retry other client errors', async () => {
+    let requestCount = 0
+
+    server.use(
+      http.get('https://api.weather.gov/alerts', () => {
+        requestCount += 1
+
+        return HttpResponse.json(
+          {
+            title: 'Bad request',
+            status: 400,
+            detail: 'The request was not accepted.',
+          },
+          { status: 400 },
+        )
+      }),
+    )
+
+    renderApp({ initialEntries: ['/alerts'] })
+
+    expect(
+      await screen.findByRole('alert', {
+        name: 'Weather alerts request failed',
+      }),
+    ).toHaveTextContent('Could not load weather alerts.')
+    expect(requestCount).toBe(1)
+    expect(
+      screen.queryByRole('button', { name: 'Try again' }),
+    ).not.toBeInTheDocument()
+  })
+
   it('shows NWS alerts in a semantic table', async () => {
     vi.stubEnv('TZ', 'America/Chicago')
     renderApp({ initialEntries: ['/alerts'] })
@@ -233,6 +395,31 @@ describe('alerts list', () => {
     expect(requestCount).toBe(0)
   })
 
+  it('explains an invalid date range without sending a request', () => {
+    let requestCount = 0
+    const today = new Date()
+    const yesterday = new Date(today)
+    yesterday.setDate(today.getDate() - 1)
+
+    server.use(
+      http.get('https://api.weather.gov/alerts', () => {
+        requestCount += 1
+        return HttpResponse.json(listFixture)
+      }),
+    )
+
+    renderApp({
+      initialEntries: [
+        `/alerts?from=${formatLocalDate(today)}&to=${formatLocalDate(yesterday)}`,
+      ],
+    })
+
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      'Issued from must be on or before issued to.',
+    )
+    expect(requestCount).toBe(0)
+  })
+
   it('restores a 25-row page from the URL', async () => {
     const user = userEvent.setup()
     const pagedFixture = {
@@ -273,4 +460,115 @@ describe('alerts list', () => {
     })
     expect(await within(table).findByText('Alert 01')).toBeVisible()
   })
+
+  it('loads the next NWS page and reports only the alerts already loaded', async () => {
+    const user = userEvent.setup()
+    let requestedCursor: string | null = null
+    const nextPageFeature = {
+      ...completeFeature,
+      id: 'https://api.weather.gov/alerts/next-page-alert',
+      properties: {
+        ...completeFeature.properties,
+        id: 'next-page-alert',
+        event: 'Coastal Flood Warning',
+      },
+    }
+
+    server.use(
+      http.get('https://api.weather.gov/alerts', ({ request }) => {
+        requestedCursor = new URL(request.url).searchParams.get('cursor')
+
+        if (requestedCursor === 'next-page-token') {
+          return HttpResponse.json({
+            ...listFixture,
+            features: [nextPageFeature],
+            pagination: {},
+          })
+        }
+
+        return HttpResponse.json(listFixture)
+      }),
+    )
+
+    renderApp({ initialEntries: ['/alerts'] })
+
+    expect(
+      await screen.findByRole('status', { name: 'Loaded alert count' }),
+    ).toHaveTextContent(
+      '2 alerts loaded. Showing 2 matching alerts. More alerts are available from NWS.',
+    )
+
+    await user.click(screen.getByRole('button', { name: 'Load more alerts' }))
+
+    expect(
+      await screen.findByRole('status', { name: 'Loaded alert count' }),
+    ).toHaveTextContent('3 alerts loaded. Showing 3 matching alerts.')
+    expect(requestedCursor).toBe('next-page-token')
+    expect(screen.getByText('Coastal Flood Warning')).toBeVisible()
+    expect(
+      screen.queryByRole('button', { name: 'Load more alerts' }),
+    ).not.toBeInTheDocument()
+  })
+
+  it('keeps loaded alerts visible when the next page fails', async () => {
+    const user = userEvent.setup()
+    let nextPageRequestCount = 0
+
+    server.use(
+      http.get('https://api.weather.gov/alerts', ({ request }) => {
+        const cursor = new URL(request.url).searchParams.get('cursor')
+
+        if (cursor !== 'next-page-token') {
+          return HttpResponse.json(listFixture)
+        }
+
+        nextPageRequestCount += 1
+
+        if (nextPageRequestCount <= 2) {
+          return HttpResponse.json(
+            { title: 'Service unavailable', status: 503 },
+            { status: 503 },
+          )
+        }
+
+        return HttpResponse.json({
+          ...listFixture,
+          features: [],
+          pagination: {},
+        })
+      }),
+    )
+
+    renderApp({ initialEntries: ['/alerts'] })
+    const table = await screen.findByRole('table', { name: 'Weather alerts' })
+
+    await user.click(screen.getByRole('button', { name: 'Load more alerts' }))
+
+    expect(
+      await screen.findByRole(
+        'alert',
+        { name: 'Could not load more alerts' },
+        { timeout: 4_000 },
+      ),
+    ).toHaveTextContent('The alerts above are still available.')
+    expect(table).toBeVisible()
+    expect(nextPageRequestCount).toBe(2)
+
+    await user.click(screen.getByRole('button', { name: 'Try again' }))
+
+    await waitFor(() => {
+      expect(nextPageRequestCount).toBe(3)
+    })
+    expect(
+      screen.queryByRole('alert', { name: 'Could not load more alerts' }),
+    ).not.toBeInTheDocument()
+  })
 })
+
+function formatLocalDate(date: Date): string {
+  const year = String(date.getFullYear()).padStart(4, '0')
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+
+  return `${year}-${month}-${day}`
+}

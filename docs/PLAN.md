@@ -87,12 +87,12 @@ Add tests with each stage. Run `pnpm fix` before marking a stage complete.
 ### Stage 6: Pagination and interface states
 
 - [x] Show table-shaped skeletons during the first request.
-- [ ] Keep existing rows visible with an updating indicator while filters reload data.
-- [ ] Add clear empty, invalid-range, request-error, rate-limit, and not-found states.
-- [ ] Add retry actions; retry network, rate-limit, and server failures once, but do not retry other client errors.
-- [ ] Follow the NWS pagination cursor with a Load more action.
-- [ ] Show how many alerts are loaded without implying that unseen results were sorted or searched.
-- [ ] Test every state and the multi-page loading flow with MSW.
+- [x] Keep existing rows visible with an updating indicator while filters reload data.
+- [x] Add clear empty, invalid-range, request-error, rate-limit, and not-found states.
+- [x] Add retry actions; retry network, rate-limit, and server failures once, but do not retry other client errors.
+- [x] Follow the NWS pagination cursor with a Load more action.
+- [x] Show how many alerts are loaded without implying that unseen results were sorted or searched.
+- [x] Test every state and the multi-page loading flow with MSW.
 
 **Complete when:** every request outcome has a deterministic test and the user always has a clear next action.
 

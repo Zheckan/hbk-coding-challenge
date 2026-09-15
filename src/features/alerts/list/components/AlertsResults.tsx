@@ -1,11 +1,10 @@
-import { Alert as MuiAlert, Typography } from '@mui/material'
-
 import type {
   AlertsSortDirection,
   AlertsSortKey,
 } from '../logic/alerts-list-state'
 import type { AlertsViewState } from '../logic/useAlerts'
-import { AlertsTable } from './AlertsTable'
+import { AlertsFeedback } from './AlertsFeedback'
+import { AlertsLoadedResults } from './AlertsLoadedResults'
 import { AlertsTableSkeleton } from './AlertsTableSkeleton'
 
 type AlertsResultsProps = Readonly<{
@@ -29,30 +28,19 @@ export function AlertsResults({
     case 'loading':
       return <AlertsTableSkeleton />
     case 'invalid':
-      return (
-        <MuiAlert severity="warning">
-          {state.errors.map((error) => (
-            <Typography component="div" key={error}>
-              {error}
-            </Typography>
-          ))}
-        </MuiAlert>
-      )
-    case 'error':
-      return (
-        <MuiAlert severity="error">Could not load weather alerts.</MuiAlert>
-      )
+    case 'rate-limit':
+    case 'request-error':
+      return <AlertsFeedback state={state} />
+    case 'empty':
     case 'ready':
       return (
-        <AlertsTable
-          alerts={state.alerts}
+        <AlertsLoadedResults
           direction={direction}
           listSearch={listSearch}
           onPageChange={onPageChange}
           onSort={onSort}
-          page={state.page}
           sort={sort}
-          total={state.total}
+          state={state}
         />
       )
     default: {
