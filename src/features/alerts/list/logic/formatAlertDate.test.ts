@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { formatAlertDate } from "./format-alert-date";
+import { formatAlertDate } from "./formatAlertDate";
 
 describe("formatAlertDate", () => {
   it("displays an alert date in the selected local timezone", () => {

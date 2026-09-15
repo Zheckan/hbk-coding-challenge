@@ -1,5 +1,5 @@
 import type { Alert, AlertPage } from "../model/alert";
-import type { AlertQuery } from "../model/alert-query";
+import type { AlertQuery } from "../model/AlertQuery";
 import {
   parseAlert,
   parseAlertCollection,

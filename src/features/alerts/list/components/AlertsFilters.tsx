@@ -20,6 +20,7 @@ import type {
   AlertsDateBounds,
   AlertsListFilters,
 } from "../logic/alerts-list-state";
+import { AlertsDateFilter } from "./AlertsDateFilter";
 
 type AlertsFiltersProps = Readonly<{
   filters: AlertsListFilters;
@@ -159,32 +160,22 @@ export function AlertsFilters({
               </option>
             ))}
           </TextField>
-          <TextField
-            fullWidth
-            helperText={`Available from ${dateBounds.min}`}
+          <AlertsDateFilter
+            dateBounds={dateBounds}
+            emptyLabel="Any start date"
             label="Issued from"
-            onChange={(event) => {
-              onChange({ ...filters, issuedFrom: event.target.value });
+            onChange={(issuedFrom) => {
+              onChange({ ...filters, issuedFrom });
             }}
-            slotProps={{
-              htmlInput: { min: dateBounds.min, max: dateBounds.max },
-              inputLabel: { shrink: true },
-            }}
-            type="date"
             value={filters.issuedFrom}
           />
-          <TextField
-            fullWidth
-            helperText={`Available through ${dateBounds.max}`}
+          <AlertsDateFilter
+            dateBounds={dateBounds}
+            emptyLabel="Any end date"
             label="Issued to"
-            onChange={(event) => {
-              onChange({ ...filters, issuedTo: event.target.value });
+            onChange={(issuedTo) => {
+              onChange({ ...filters, issuedTo });
             }}
-            slotProps={{
-              htmlInput: { min: dateBounds.min, max: dateBounds.max },
-              inputLabel: { shrink: true },
-            }}
-            type="date"
             value={filters.issuedTo}
           />
         </Box>

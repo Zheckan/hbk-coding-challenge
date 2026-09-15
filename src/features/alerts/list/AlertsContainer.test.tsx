@@ -4,7 +4,7 @@ import { delay, http, HttpResponse } from "msw";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import listFixture from "@/test/fixtures/nws-alert-list.json";
-import { renderApp } from "@/test/render-app";
+import { renderApp } from "@/test/renderApp";
 import { server } from "@/test/server";
 import { testIds } from "@/ui/utils/testIds";
 
@@ -104,6 +104,26 @@ describe("alerts list", () => {
     ).toBeVisible();
   });
 
+  it("offers only the seven dates available from NWS", async () => {
+    renderApp({ initialEntries: ["/alerts"] });
+
+    const issuedFrom = await screen.findByRole("combobox", {
+      name: "Issued from",
+    });
+    const issuedTo = screen.getByRole("combobox", { name: "Issued to" });
+    const fromValues = within(issuedFrom)
+      .getAllByRole("option")
+      .map((option) => option.getAttribute("value"));
+    const toValues = within(issuedTo)
+      .getAllByRole("option")
+      .map((option) => option.getAttribute("value"));
+
+    expect(fromValues).toHaveLength(8);
+    expect(fromValues[0]).toBe("");
+    expect(new Set(fromValues.slice(1)).size).toBe(7);
+    expect(toValues).toEqual(fromValues);
+  });
+
   it("restores filters from the URL and sends supported filters to NWS", async () => {
     let requestedUrl: URL | undefined;
 
@@ -176,6 +196,22 @@ describe("alerts list", () => {
       expect(router.state.location.search).toBe(
         "?area=KS&severity=moderate&q=lake&sort=severity&direction=asc",
       );
+    });
+  });
+
+  it("clears filters without resetting the selected sort", async () => {
+    const user = userEvent.setup();
+    const { router } = renderApp({
+      initialEntries: [
+        "/alerts?area=KS&severity=severe&q=flood&sort=severity&page=2",
+      ],
+    });
+
+    await screen.findByRole("table", { name: "Weather alerts" });
+    await user.click(screen.getByRole("button", { name: "Clear filters" }));
+
+    await waitFor(() => {
+      expect(router.state.location.search).toBe("?sort=severity");
     });
   });
 

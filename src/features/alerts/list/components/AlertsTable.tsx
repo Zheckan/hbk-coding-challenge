@@ -23,7 +23,7 @@ import {
   type AlertsSortDirection,
   type AlertsSortKey,
 } from "../logic/alerts-list-state";
-import { formatAlertDate } from "../logic/format-alert-date";
+import { formatAlertDate } from "../logic/formatAlertDate";
 import { AlertsTableHead } from "./AlertsTableHead";
 
 type AlertsTableProps = Readonly<{

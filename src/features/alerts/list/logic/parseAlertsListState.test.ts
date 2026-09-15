@@ -1,9 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import {
-  parseAlertsListState,
-  serializeAlertsListState,
-} from "./alerts-list-state";
+import { parseAlertsListState } from "./parseAlertsListState";
 
 describe("alerts list URL state", () => {
   afterEach(() => {
@@ -20,7 +17,7 @@ describe("alerts list URL state", () => {
         area: "ks",
         severity: "severe",
         status: "actual",
-        q: "  flood  ",
+        q: "flood",
         sort: "severity",
         direction: "asc",
         page: "2",
@@ -53,14 +50,15 @@ describe("alerts list URL state", () => {
         status: "Actual",
       },
     });
+  });
 
-    if (result.kind !== "valid") {
-      throw new Error("Expected valid alert list state");
-    }
-
-    expect(serializeAlertsListState(result.state).toString()).toBe(
-      "from=2026-09-10&to=2026-09-14&area=KS&severity=severe&status=actual&q=flood&sort=severity&direction=asc&page=2",
+  it("trims surrounding spaces from text search", () => {
+    const result = parseAlertsListState(
+      new URLSearchParams({ q: "  flood  " }),
+      new Date(2026, 8, 14, 12),
     );
+
+    expect(result.state.search).toBe("flood");
   });
 
   it.each([
