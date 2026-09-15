@@ -17,4 +17,9 @@ Keep each field to one or two sentences. Update a matching note instead of addin
 
 ## Notes
 
-No notes yet.
+### 2026-09-15: NWS alert descriptions can be null
+
+- Symptom: The unfiltered alerts request returned HTTP 200, but the app rejected the whole collection and showed an error.
+- Cause: A live NWS alert had a `null` description while the response schema required a string.
+- Fix: Keep alert descriptions nullable in the response schema and domain model, with a nullable fixture case.
+- Evidence: The live 500-alert response contained one null description; the parser regression test and browser check passed after the fix.

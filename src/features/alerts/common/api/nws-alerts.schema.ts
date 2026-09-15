@@ -35,7 +35,7 @@ const alertPropertiesSchema = z.object({
   sender: z.string(),
   senderName: z.string(),
   headline: optionalTextSchema,
-  description: z.string(),
+  description: optionalTextSchema,
   instruction: optionalTextSchema,
 });
 

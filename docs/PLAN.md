@@ -62,13 +62,13 @@ Add tests with each stage. Run `pnpm fix` before marking a stage complete.
 
 ### Stage 4: Filters, sorting, date range, and URL state
 
-- [ ] Parse, validate, and normalize the list state from URL search parameters.
-- [ ] Add issued-from, issued-to, area, severity, status, and text-search controls.
-- [ ] Convert local calendar dates into the API's ISO date-time values and enforce its available date window.
-- [ ] Send supported filters to the API and apply text search to the loaded alerts.
-- [ ] Add severity, event, area, issued-time, and expiry-time sorting.
-- [ ] Add 25-row table pages and preserve filters and sorting during navigation and reloads.
-- [ ] Test valid and invalid ranges, URL updates, API queries, searching, sorting, and restored state.
+- [x] Parse, validate, and normalize the list state from URL search parameters.
+- [x] Add issued-from, issued-to, area, severity, status, and text-search controls.
+- [x] Convert local calendar dates into the API's ISO date-time values and enforce its available date window.
+- [x] Send supported filters to the API and apply text search to the loaded alerts.
+- [x] Add severity, event, area, issued-time, and expiry-time sorting.
+- [x] Add 25-row table pages and preserve filters and sorting during navigation and reloads.
+- [x] Test valid and invalid ranges, URL updates, API queries, searching, sorting, and restored state.
 
 **Complete when:** users can change every filter and sort option, copy the URL, and reopen the same table state.
 

@@ -63,7 +63,7 @@ export type Alert = Readonly<{
   sender: string;
   senderName: string;
   headline: string | null;
-  description: string;
+  description: string | null;
   instruction: string | null;
 }>;
 

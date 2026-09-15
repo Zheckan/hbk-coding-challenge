@@ -17,7 +17,7 @@ export function AlertsTableSkeleton() {
     <Box aria-label="Loading weather alerts" role="status">
       <TableContainer component={Paper}>
         <Table aria-busy="true" aria-label="Weather alerts loading">
-          <AlertsTableHead />
+          <AlertsTableHead kind="static" />
           <TableBody>
             {skeletonRows.map((row) => (
               <TableRow key={row}>

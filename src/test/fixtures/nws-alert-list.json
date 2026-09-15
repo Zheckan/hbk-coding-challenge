@@ -49,7 +49,7 @@
         "event": "Special Weather Statement",
         "sender": "w-nws.webmaster@noaa.gov",
         "senderName": "National Weather Service",
-        "description": "Conditions may change during the afternoon.",
+        "description": null,
         "web": "http://www.weather.gov"
       }
     }

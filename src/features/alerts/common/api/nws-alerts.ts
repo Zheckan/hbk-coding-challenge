@@ -56,7 +56,7 @@ function buildAlertsUrl(query: AlertQuery): URL {
   }
 
   if (query.severity !== undefined) {
-    url.searchParams.set("severity", query.severity.toLowerCase());
+    url.searchParams.set("severity", query.severity);
   }
 
   if (query.limit !== undefined) {

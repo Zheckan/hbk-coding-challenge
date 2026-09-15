@@ -6,6 +6,8 @@ import {
   TableBody,
   TableCell,
   TableContainer,
+  TableFooter,
+  TablePagination,
   TableRow,
   type ChipProps,
 } from "@mui/material";
@@ -16,10 +18,21 @@ import {
 } from "@/features/alerts/common/model/alert";
 import { testIds } from "@/ui/utils/testIds";
 import { formatAlertDate } from "../logic/format-alert-date";
+import {
+  ALERTS_PAGE_SIZE,
+  type AlertsSortDirection,
+  type AlertsSortKey,
+} from "../logic/alerts-list-state";
 import { AlertsTableHead } from "./AlertsTableHead";
 
 type AlertsTableProps = Readonly<{
   alerts: readonly Alert[];
+  total: number;
+  page: number;
+  sort: AlertsSortKey;
+  direction: AlertsSortDirection;
+  onSort: (sort: AlertsSortKey) => void;
+  onPageChange: (page: number) => void;
 }>;
 
 const severityColors = {
@@ -30,11 +43,24 @@ const severityColors = {
   Unknown: "default",
 } satisfies Record<AlertSeverity, ChipProps["color"]>;
 
-export function AlertsTable({ alerts }: AlertsTableProps) {
+export function AlertsTable({
+  alerts,
+  total,
+  page,
+  sort,
+  direction,
+  onSort,
+  onPageChange,
+}: AlertsTableProps) {
   return (
     <TableContainer component={Paper}>
       <Table aria-label="Weather alerts">
-        <AlertsTableHead />
+        <AlertsTableHead
+          direction={direction}
+          kind="sortable"
+          onSort={onSort}
+          sort={sort}
+        />
         <TableBody>
           {alerts.map((alert) => (
             <TableRow
@@ -71,6 +97,20 @@ export function AlertsTable({ alerts }: AlertsTableProps) {
             </TableRow>
           ))}
         </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TablePagination
+              colSpan={7}
+              count={total}
+              onPageChange={(_event, nextPage) => {
+                onPageChange(nextPage + 1);
+              }}
+              page={page - 1}
+              rowsPerPage={ALERTS_PAGE_SIZE}
+              rowsPerPageOptions={[ALERTS_PAGE_SIZE]}
+            />
+          </TableRow>
+        </TableFooter>
       </Table>
     </TableContainer>
   );

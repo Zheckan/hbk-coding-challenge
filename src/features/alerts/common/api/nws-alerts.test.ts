@@ -45,7 +45,7 @@ describe("fetchAlerts", () => {
     );
     expect(requestedUrl?.searchParams.get("area")).toBe("KS");
     expect(requestedUrl?.searchParams.get("status")).toBe("actual");
-    expect(requestedUrl?.searchParams.get("severity")).toBe("severe");
+    expect(requestedUrl?.searchParams.get("severity")).toBe("Severe");
     expect(requestedUrl?.searchParams.get("limit")).toBe("2");
     expect(requestedUrl?.searchParams.get("cursor")).toBe("current-page-token");
     expect(requestedAccept).toBe("application/geo+json");
@@ -92,7 +92,7 @@ describe("fetchAlerts", () => {
           sender: "w-nws.webmaster@noaa.gov",
           senderName: "National Weather Service",
           headline: null,
-          description: "Conditions may change during the afternoon.",
+          description: null,
           instruction: null,
         },
       ],
