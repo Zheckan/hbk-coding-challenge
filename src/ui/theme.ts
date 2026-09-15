@@ -72,6 +72,9 @@ export const theme = createTheme({
           outline: '3px solid #005a8b',
           outlineOffset: 3,
         },
+        html: {
+          scrollbarGutter: 'stable',
+        },
         body: {
           minWidth: 320,
         },

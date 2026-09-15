@@ -12,6 +12,7 @@ import {
 import { AlertsTableHead } from './AlertsTableHead'
 
 const skeletonRows = [0, 1, 2, 3, 4] as const
+const SKELETON_ROW_HEIGHT = 88
 
 export function AlertsTableSkeleton() {
   return (
@@ -33,12 +34,17 @@ export function AlertsTableSkeleton() {
           sx={{
             minWidth: { xs: '100%', md: 1180 },
             width: '100%',
+            '& .MuiTableCell-root': {
+              px: { xs: 1, sm: 2 },
+              py: 1.5,
+              verticalAlign: 'middle',
+            },
           }}
         >
           <AlertsTableHead kind="static" />
           <TableBody>
             {skeletonRows.map((row) => (
-              <TableRow key={row}>
+              <TableRow key={row} sx={{ height: SKELETON_ROW_HEIGHT }}>
                 <TableCell
                   sx={{
                     textAlign: { xs: 'center', md: 'left' },
@@ -61,9 +67,13 @@ export function AlertsTableSkeleton() {
                 </TableCell>
                 <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}>
                   <Skeleton width="90%" />
+                  <Skeleton width="75%" />
+                  <Skeleton width="55%" />
                 </TableCell>
                 <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}>
                   <Skeleton width="85%" />
+                  <Skeleton width="65%" />
+                  <Skeleton width="45%" />
                 </TableCell>
                 <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}>
                   <Skeleton width={145} />
