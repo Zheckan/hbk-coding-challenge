@@ -1,18 +1,18 @@
-import { TableCell, TableHead, TableRow, TableSortLabel } from "@mui/material";
+import { TableCell, TableHead, TableRow, TableSortLabel } from '@mui/material'
 
 import type {
   AlertsSortDirection,
   AlertsSortKey,
-} from "../logic/alerts-list-state";
+} from '../logic/alerts-list-state'
 
 type AlertsTableHeadProps =
-  | Readonly<{ kind: "static" }>
+  | Readonly<{ kind: 'static' }>
   | Readonly<{
-      kind: "sortable";
-      sort: AlertsSortKey;
-      direction: AlertsSortDirection;
-      onSort: (sort: AlertsSortKey) => void;
-    }>;
+      kind: 'sortable'
+      sort: AlertsSortKey
+      direction: AlertsSortDirection
+      onSort: (sort: AlertsSortKey) => void
+    }>
 
 export function AlertsTableHead(props: AlertsTableHeadProps) {
   return (
@@ -31,7 +31,7 @@ export function AlertsTableHead(props: AlertsTableHeadProps) {
         <TableCell scope="col">Details</TableCell>
       </TableRow>
     </TableHead>
-  );
+  )
 }
 
 function SortableTableCell({
@@ -39,28 +39,28 @@ function SortableTableCell({
   sort,
   props,
 }: Readonly<{
-  label: string;
-  sort: AlertsSortKey;
-  props: AlertsTableHeadProps;
+  label: string
+  sort: AlertsSortKey
+  props: AlertsTableHeadProps
 }>) {
-  if (props.kind === "static") {
-    return <TableCell scope="col">{label}</TableCell>;
+  if (props.kind === 'static') {
+    return <TableCell scope="col">{label}</TableCell>
   }
 
-  const active = props.sort === sort;
+  const active = props.sort === sort
 
   return (
     <TableCell scope="col" sortDirection={active ? props.direction : false}>
       <TableSortLabel
         active={active}
         aria-label={`Sort by ${label.toLocaleLowerCase()}`}
-        direction={active ? props.direction : "asc"}
+        direction={active ? props.direction : 'asc'}
         onClick={() => {
-          props.onSort(sort);
+          props.onSort(sort)
         }}
       >
         {label}
       </TableSortLabel>
     </TableCell>
-  );
+  )
 }

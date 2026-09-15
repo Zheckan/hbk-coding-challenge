@@ -1,15 +1,15 @@
-import { TextField } from "@mui/material";
+import { TextField } from '@mui/material'
 
-import type { AlertsDateBounds } from "../logic/alerts-list-state";
-import { getAlertsDateOptions } from "../logic/getAlertsDateOptions";
+import type { AlertsDateBounds } from '../logic/alerts-list-state'
+import { getAlertsDateOptions } from '../logic/getAlertsDateOptions'
 
 type AlertsDateFilterProps = Readonly<{
-  label: string;
-  emptyLabel: string;
-  value: string;
-  dateBounds: AlertsDateBounds;
-  onChange: (value: string) => void;
-}>;
+  label: string
+  emptyLabel: string
+  value: string
+  dateBounds: AlertsDateBounds
+  onChange: (value: string) => void
+}>
 
 export function AlertsDateFilter({
   label,
@@ -18,11 +18,11 @@ export function AlertsDateFilter({
   dateBounds,
   onChange,
 }: AlertsDateFilterProps) {
-  const options = getAlertsDateOptions(dateBounds);
+  const options = getAlertsDateOptions(dateBounds)
   const unsupportedDate =
-    value !== "" && !options.some((option) => option.value === value)
+    value !== '' && !options.some((option) => option.value === value)
       ? value
-      : null;
+      : null
 
   return (
     <TextField
@@ -30,7 +30,7 @@ export function AlertsDateFilter({
       helperText="Past seven days available from NWS"
       label={label}
       onChange={(event) => {
-        onChange(event.target.value);
+        onChange(event.target.value)
       }}
       select
       slotProps={{
@@ -51,5 +51,5 @@ export function AlertsDateFilter({
         </option>
       ))}
     </TextField>
-  );
+  )
 }

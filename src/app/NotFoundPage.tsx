@@ -1,5 +1,5 @@
-import { Link, Stack, Typography } from "@mui/material";
-import { Link as RouterLink } from "react-router-dom";
+import { Link, Stack, Typography } from '@mui/material'
+import { Link as RouterLink } from 'react-router-dom'
 
 export function NotFoundPage() {
   return (
@@ -14,5 +14,5 @@ export function NotFoundPage() {
         View weather alerts
       </Link>
     </Stack>
-  );
+  )
 }

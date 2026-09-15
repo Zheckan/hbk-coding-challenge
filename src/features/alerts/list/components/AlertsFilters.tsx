@@ -1,33 +1,26 @@
-import {
-  Box,
-  Button,
-  Paper,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Paper, Stack, TextField, Typography } from '@mui/material'
 
 import {
   ALERT_SEVERITIES,
   ALERT_STATUSES,
-} from "@/features/alerts/common/model/alert";
+} from '@/features/alerts/common/model/alert'
 import {
   isAlertAreaCode,
   MARINE_AREA_OPTIONS,
   STATE_TERRITORY_AREA_OPTIONS,
-} from "../logic/alert-area-options";
+} from '../logic/alert-area-options'
 import type {
   AlertsDateBounds,
   AlertsListFilters,
-} from "../logic/alerts-list-state";
-import { AlertsDateFilter } from "./AlertsDateFilter";
+} from '../logic/alerts-list-state'
+import { AlertsDateFilter } from './AlertsDateFilter'
 
 type AlertsFiltersProps = Readonly<{
-  filters: AlertsListFilters;
-  dateBounds: AlertsDateBounds;
-  onChange: (filters: AlertsListFilters) => void;
-  onClear: () => void;
-}>;
+  filters: AlertsListFilters
+  dateBounds: AlertsDateBounds
+  onChange: (filters: AlertsListFilters) => void
+  onClear: () => void
+}>
 
 export function AlertsFilters({
   filters,
@@ -35,9 +28,9 @@ export function AlertsFilters({
   onChange,
   onClear,
 }: AlertsFiltersProps) {
-  const hasFilters = Object.values(filters).some((value) => value !== "");
+  const hasFilters = Object.values(filters).some((value) => value !== '')
   const unsupportedArea =
-    filters.area !== "" && !isAlertAreaCode(filters.area) ? filters.area : null;
+    filters.area !== '' && !isAlertAreaCode(filters.area) ? filters.area : null
 
   return (
     <Paper
@@ -53,12 +46,12 @@ export function AlertsFilters({
 
         <Box
           sx={{
-            display: "grid",
+            display: 'grid',
             gap: 2,
             gridTemplateColumns: {
-              xs: "1fr",
-              sm: "repeat(2, minmax(0, 1fr))",
-              lg: "repeat(3, minmax(0, 1fr))",
+              xs: '1fr',
+              sm: 'repeat(2, minmax(0, 1fr))',
+              lg: 'repeat(3, minmax(0, 1fr))',
             },
           }}
         >
@@ -66,7 +59,7 @@ export function AlertsFilters({
             fullWidth
             label="Search alerts"
             onChange={(event) => {
-              onChange({ ...filters, search: event.target.value });
+              onChange({ ...filters, search: event.target.value })
             }}
             type="search"
             value={filters.search}
@@ -78,9 +71,9 @@ export function AlertsFilters({
             onChange={(event) => {
               const area = isAlertAreaCode(event.target.value)
                 ? event.target.value
-                : "";
+                : ''
 
-              onChange({ ...filters, area });
+              onChange({ ...filters, area })
             }}
             select
             slotProps={{
@@ -117,9 +110,9 @@ export function AlertsFilters({
               const severity =
                 ALERT_SEVERITIES.find(
                   (option) => option === event.target.value,
-                ) ?? "";
+                ) ?? ''
 
-              onChange({ ...filters, severity });
+              onChange({ ...filters, severity })
             }}
             select
             slotProps={{
@@ -142,9 +135,9 @@ export function AlertsFilters({
               const status =
                 ALERT_STATUSES.find(
                   (option) => option === event.target.value,
-                ) ?? "";
+                ) ?? ''
 
-              onChange({ ...filters, status });
+              onChange({ ...filters, status })
             }}
             select
             slotProps={{
@@ -165,7 +158,7 @@ export function AlertsFilters({
             emptyLabel="Any start date"
             label="Issued from"
             onChange={(issuedFrom) => {
-              onChange({ ...filters, issuedFrom });
+              onChange({ ...filters, issuedFrom })
             }}
             value={filters.issuedFrom}
           />
@@ -174,7 +167,7 @@ export function AlertsFilters({
             emptyLabel="Any end date"
             label="Issued to"
             onChange={(issuedTo) => {
-              onChange({ ...filters, issuedTo });
+              onChange({ ...filters, issuedTo })
             }}
             value={filters.issuedTo}
           />
@@ -187,5 +180,5 @@ export function AlertsFilters({
         </Box>
       </Stack>
     </Paper>
-  );
+  )
 }

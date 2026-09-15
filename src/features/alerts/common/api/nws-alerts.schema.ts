@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod'
 
 import {
   type Alert,
@@ -8,16 +8,16 @@ import {
   ALERT_STATUSES,
   ALERT_URGENCIES,
   type AlertPage,
-} from "../model/alert";
+} from '../model/alert'
 
-const dateTimeSchema = z.iso.datetime({ offset: true });
+const dateTimeSchema = z.iso.datetime({ offset: true })
 const optionalDateTimeSchema = dateTimeSchema
   .nullish()
-  .transform((value) => value ?? null);
+  .transform((value) => value ?? null)
 const optionalTextSchema = z
   .string()
   .nullish()
-  .transform((value) => value ?? null);
+  .transform((value) => value ?? null)
 
 const alertPropertiesSchema = z.object({
   id: z.string().min(1),
@@ -38,34 +38,34 @@ const alertPropertiesSchema = z.object({
   headline: optionalTextSchema,
   description: optionalTextSchema,
   instruction: optionalTextSchema,
-});
+})
 
 const alertFeatureSchema = z.object({
   id: z.url(),
-  type: z.literal("Feature"),
+  type: z.literal('Feature'),
   properties: alertPropertiesSchema,
-});
+})
 
 const alertCollectionSchema = z.object({
-  type: z.literal("FeatureCollection"),
+  type: z.literal('FeatureCollection'),
   features: z.array(alertFeatureSchema),
   pagination: z
     .object({
       next: z.url().optional(),
     })
     .optional(),
-});
+})
 
 const problemDetailsSchema = z.object({
   title: z.string().optional(),
   detail: z.string().optional(),
   correlationId: z.string().optional(),
-});
+})
 
-type AlertFeature = z.infer<typeof alertFeatureSchema>;
+type AlertFeature = z.infer<typeof alertFeatureSchema>
 
 function toAlert(feature: AlertFeature): Alert {
-  const properties = feature.properties;
+  const properties = feature.properties
 
   return {
     id: properties.id,
@@ -87,50 +87,50 @@ function toAlert(feature: AlertFeature): Alert {
     headline: properties.headline,
     description: properties.description,
     instruction: properties.instruction,
-  };
+  }
 }
 
 function readNextCursor(nextUrl: string | undefined): string | null {
   if (nextUrl === undefined) {
-    return null;
+    return null
   }
 
-  const cursor = new URL(nextUrl).searchParams.get("cursor");
+  const cursor = new URL(nextUrl).searchParams.get('cursor')
 
   if (cursor === null || cursor.length === 0) {
-    throw new Error("NWS pagination link does not contain a cursor");
+    throw new Error('NWS pagination link does not contain a cursor')
   }
 
-  return cursor;
+  return cursor
 }
 
 export function parseAlertCollection(input: unknown): AlertPage {
-  const collection = alertCollectionSchema.parse(input);
+  const collection = alertCollectionSchema.parse(input)
 
   return {
     alerts: collection.features.map(toAlert),
     nextCursor: readNextCursor(collection.pagination?.next),
-  };
+  }
 }
 
 export function parseAlert(input: unknown): Alert {
-  return toAlert(alertFeatureSchema.parse(input));
+  return toAlert(alertFeatureSchema.parse(input))
 }
 
 export function parseProblemDetails(input: unknown): Readonly<{
-  title: string | null;
-  detail: string | null;
-  correlationId: string | null;
+  title: string | null
+  detail: string | null
+  correlationId: string | null
 }> | null {
-  const result = problemDetailsSchema.safeParse(input);
+  const result = problemDetailsSchema.safeParse(input)
 
   if (!result.success) {
-    return null;
+    return null
   }
 
   return {
     title: result.data.title ?? null,
     detail: result.data.detail ?? null,
     correlationId: result.data.correlationId ?? null,
-  };
+  }
 }

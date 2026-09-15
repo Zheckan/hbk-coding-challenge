@@ -1,14 +1,14 @@
-import { CssBaseline, ThemeProvider } from "@mui/material";
-import { type QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import type { PropsWithChildren } from "react";
+import { CssBaseline, ThemeProvider } from '@mui/material'
+import { type QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import type { PropsWithChildren } from 'react'
 
-import { theme } from "@/ui/theme";
+import { theme } from '@/ui/theme'
 
 type AppProvidersProps = PropsWithChildren<
   Readonly<{
-    queryClient: QueryClient;
+    queryClient: QueryClient
   }>
->;
+>
 
 export function AppProviders({ children, queryClient }: AppProvidersProps) {
   return (
@@ -18,5 +18,5 @@ export function AppProviders({ children, queryClient }: AppProvidersProps) {
         {children}
       </ThemeProvider>
     </QueryClientProvider>
-  );
+  )
 }

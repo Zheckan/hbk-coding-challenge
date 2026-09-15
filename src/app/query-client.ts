@@ -1,5 +1,5 @@
-import { QueryClient } from "@tanstack/react-query";
+import { QueryClient } from '@tanstack/react-query'
 
 export function createAppQueryClient(): QueryClient {
-  return new QueryClient();
+  return new QueryClient()
 }

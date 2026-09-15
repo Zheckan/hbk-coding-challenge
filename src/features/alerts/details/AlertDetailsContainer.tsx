@@ -1,12 +1,12 @@
-import { useAlertDetails } from "./logic/useAlertDetails";
-import { AlertDetailsView } from "./views/AlertDetailsView";
+import { useAlertDetails } from './logic/useAlertDetails'
+import { AlertDetailsView } from './views/AlertDetailsView'
 
 type AlertDetailsContainerProps = Readonly<{
-  alertId: string;
-}>;
+  alertId: string
+}>
 
 export function AlertDetailsContainer({ alertId }: AlertDetailsContainerProps) {
-  const alertDetails = useAlertDetails(alertId);
+  const alertDetails = useAlertDetails(alertId)
 
-  return <AlertDetailsView {...alertDetails} />;
+  return <AlertDetailsView {...alertDetails} />
 }

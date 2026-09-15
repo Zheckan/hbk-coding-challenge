@@ -1,22 +1,22 @@
-import { Box, Link, Paper, Stack, Typography } from "@mui/material";
-import { type ReactNode, useEffect, useRef } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { Box, Link, Paper, Stack, Typography } from '@mui/material'
+import { type ReactNode, useEffect, useRef } from 'react'
+import { Link as RouterLink } from 'react-router-dom'
 
-import { AlertSeverityChip } from "@/features/alerts/common/components/AlertSeverityChip";
-import { formatAlertDate } from "@/features/alerts/common/logic/formatAlertDate";
-import type { Alert } from "@/features/alerts/common/model/alert";
+import { AlertSeverityChip } from '@/features/alerts/common/components/AlertSeverityChip'
+import { formatAlertDate } from '@/features/alerts/common/logic/formatAlertDate'
+import type { Alert } from '@/features/alerts/common/model/alert'
 
 type AlertDetailsProps = Readonly<{
-  alert: Alert;
-  backTo: string;
-}>;
+  alert: Alert
+  backTo: string
+}>
 
 export function AlertDetails({ alert, backTo }: AlertDetailsProps) {
-  const headingRef = useRef<HTMLHeadingElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null)
 
   useEffect(() => {
-    headingRef.current?.focus();
-  }, [alert.id]);
+    headingRef.current?.focus()
+  }, [alert.id])
 
   return (
     <Stack spacing={3}>
@@ -24,7 +24,7 @@ export function AlertDetails({ alert, backTo }: AlertDetailsProps) {
         Back to alerts
       </Link>
 
-      <Stack spacing={1} sx={{ alignItems: "flex-start" }}>
+      <Stack spacing={1} sx={{ alignItems: 'flex-start' }}>
         <Typography color="text.secondary" variant="overline">
           Alert details
         </Typography>
@@ -32,7 +32,7 @@ export function AlertDetails({ alert, backTo }: AlertDetailsProps) {
           {alert.event}
         </Typography>
         <Typography color="text.secondary" component="p" variant="h6">
-          {alert.headline ?? "No headline provided"}
+          {alert.headline ?? 'No headline provided'}
         </Typography>
         <AlertSeverityChip severity={alert.severity} />
       </Stack>
@@ -48,9 +48,9 @@ export function AlertDetails({ alert, backTo }: AlertDetailsProps) {
         <Box
           component="dl"
           sx={{
-            display: "grid",
+            display: 'grid',
             gap: 2,
-            gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)" },
+            gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' },
             m: 0,
           }}
         >
@@ -99,7 +99,7 @@ export function AlertDetails({ alert, backTo }: AlertDetailsProps) {
         View source alert
       </Link>
     </Stack>
-  );
+  )
 }
 
 function DetailItem({
@@ -115,15 +115,15 @@ function DetailItem({
         {children}
       </Typography>
     </Box>
-  );
+  )
 }
 
 function AlertTime({ dateTime }: Readonly<{ dateTime: string | null }>) {
   if (dateTime === null) {
-    return <>Not provided by NWS</>;
+    return <>Not provided by NWS</>
   }
 
-  return <time dateTime={dateTime}>{formatAlertDate(dateTime)}</time>;
+  return <time dateTime={dateTime}>{formatAlertDate(dateTime)}</time>
 }
 
 function AlertTextSection({
@@ -131,9 +131,9 @@ function AlertTextSection({
   headingId,
   content,
 }: Readonly<{
-  heading: string;
-  headingId: string;
-  content: string | null;
+  heading: string
+  headingId: string
+  content: string | null
 }>) {
   return (
     <Paper
@@ -144,9 +144,9 @@ function AlertTextSection({
       <Typography id={headingId} sx={{ mb: 1 }} variant="h5">
         {heading}
       </Typography>
-      <Typography sx={{ whiteSpace: "pre-wrap" }}>
-        {content ?? "Not provided by NWS"}
+      <Typography sx={{ whiteSpace: 'pre-wrap' }}>
+        {content ?? 'Not provided by NWS'}
       </Typography>
     </Paper>
-  );
+  )
 }

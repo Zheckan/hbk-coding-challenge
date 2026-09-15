@@ -7,11 +7,11 @@ import {
   TableCell,
   TableContainer,
   TableRow,
-} from "@mui/material";
+} from '@mui/material'
 
-import { AlertsTableHead } from "./AlertsTableHead";
+import { AlertsTableHead } from './AlertsTableHead'
 
-const skeletonRows = [0, 1, 2, 3, 4] as const;
+const skeletonRows = [0, 1, 2, 3, 4] as const
 
 export function AlertsTableSkeleton() {
   return (
@@ -49,5 +49,5 @@ export function AlertsTableSkeleton() {
         </Table>
       </TableContainer>
     </Box>
-  );
+  )
 }

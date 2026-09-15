@@ -1,16 +1,16 @@
 type AlertDateFormatOptions = Readonly<{
-  locale?: string | readonly string[];
-  timeZone?: string;
-}>;
+  locale?: string | readonly string[]
+  timeZone?: string
+}>
 
 const alertDateFormat: Intl.DateTimeFormatOptions = {
-  year: "numeric",
-  month: "short",
-  day: "numeric",
-  hour: "numeric",
-  minute: "2-digit",
-  timeZoneName: "short",
-};
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: '2-digit',
+  timeZoneName: 'short',
+}
 
 export function formatAlertDate(
   dateTime: string,
@@ -19,5 +19,5 @@ export function formatAlertDate(
   return new Intl.DateTimeFormat(options.locale, {
     ...alertDateFormat,
     ...(options.timeZone === undefined ? {} : { timeZone: options.timeZone }),
-  }).format(new Date(dateTime));
+  }).format(new Date(dateTime))
 }

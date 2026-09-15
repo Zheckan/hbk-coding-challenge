@@ -139,9 +139,9 @@ or components through props:
 
 ```tsx
 function FeatureContainer() {
-  const feature = useFeature();
+  const feature = useFeature()
 
-  return <FeatureView {...feature} />;
+  return <FeatureView {...feature} />
 }
 ```
 
@@ -151,13 +151,13 @@ hook:
 
 ```tsx
 function FeatureContainer() {
-  const feature = useFeature();
+  const feature = useFeature()
 
-  if (feature.state.kind === "guest") {
-    return <GuestView onConnect={feature.onConnect} />;
+  if (feature.state.kind === 'guest') {
+    return <GuestView onConnect={feature.onConnect} />
   }
 
-  return <FeatureView {...feature} />;
+  return <FeatureView {...feature} />
 }
 ```
 
@@ -238,10 +238,10 @@ Prefer explicit discriminated states over combinations of optional flags:
 
 ```ts
 type FeatureViewState =
-  | { kind: "invalid"; errors: string[] }
-  | { kind: "loading" }
-  | { kind: "error" }
-  | { kind: "ready"; items: Item[]; total: number };
+  | { kind: 'invalid'; errors: string[] }
+  | { kind: 'loading' }
+  | { kind: 'error' }
+  | { kind: 'ready'; items: Item[]; total: number }
 ```
 
 This lets the container or feature hook map runtime state to one valid view
@@ -348,11 +348,11 @@ class FeaturePageObject extends BasePageObject {
 Tests should describe user behavior and expected outcomes:
 
 ```ts
-const feature = new FeaturePageObject(testContext);
+const feature = new FeaturePageObject(testContext)
 
-await feature.openSettings();
-await feature.changeOption("advanced");
-await feature.expectSettingsSaved();
+await feature.openSettings()
+await feature.changeOption('advanced')
+await feature.expectSettingsSaved()
 ```
 
 Avoid putting the following in Page Objects:
@@ -396,7 +396,7 @@ export const testIds = defineTestIds({
       balance: true,
     },
   },
-});
+})
 ```
 
 Application components use the registry:

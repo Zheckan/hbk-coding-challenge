@@ -8,30 +8,30 @@ import {
   TableFooter,
   TablePagination,
   TableRow,
-} from "@mui/material";
-import { Link as RouterLink } from "react-router-dom";
+} from '@mui/material'
+import { Link as RouterLink } from 'react-router-dom'
 
-import { AlertSeverityChip } from "@/features/alerts/common/components/AlertSeverityChip";
-import { formatAlertDate } from "@/features/alerts/common/logic/formatAlertDate";
-import { type Alert } from "@/features/alerts/common/model/alert";
-import { testIds } from "@/ui/utils/testIds";
+import { AlertSeverityChip } from '@/features/alerts/common/components/AlertSeverityChip'
+import { formatAlertDate } from '@/features/alerts/common/logic/formatAlertDate'
+import { type Alert } from '@/features/alerts/common/model/alert'
+import { testIds } from '@/ui/utils/testIds'
 import {
   ALERTS_PAGE_SIZE,
   type AlertsSortDirection,
   type AlertsSortKey,
-} from "../logic/alerts-list-state";
-import { AlertsTableHead } from "./AlertsTableHead";
+} from '../logic/alerts-list-state'
+import { AlertsTableHead } from './AlertsTableHead'
 
 type AlertsTableProps = Readonly<{
-  alerts: readonly Alert[];
-  listSearch: string;
-  total: number;
-  page: number;
-  sort: AlertsSortKey;
-  direction: AlertsSortDirection;
-  onSort: (sort: AlertsSortKey) => void;
-  onPageChange: (page: number) => void;
-}>;
+  alerts: readonly Alert[]
+  listSearch: string
+  total: number
+  page: number
+  sort: AlertsSortKey
+  direction: AlertsSortDirection
+  onSort: (sort: AlertsSortKey) => void
+  onPageChange: (page: number) => void
+}>
 
 export function AlertsTable({
   alerts,
@@ -64,7 +64,7 @@ export function AlertsTable({
               <TableCell component="th" scope="row">
                 {alert.event}
               </TableCell>
-              <TableCell>{alert.headline ?? "No headline provided"}</TableCell>
+              <TableCell>{alert.headline ?? 'No headline provided'}</TableCell>
               <TableCell>{alert.affectedArea}</TableCell>
               <TableCell>
                 <AlertTime dateTime={alert.issuedAt} />
@@ -77,7 +77,7 @@ export function AlertsTable({
                   aria-label={`View details for ${alert.event}`}
                   component={RouterLink}
                   to={`/alerts/${encodeURIComponent(alert.id)}${
-                    listSearch === "" ? "" : `?${listSearch}`
+                    listSearch === '' ? '' : `?${listSearch}`
                   }`}
                 >
                   View details
@@ -92,7 +92,7 @@ export function AlertsTable({
               colSpan={7}
               count={total}
               onPageChange={(_event, nextPage) => {
-                onPageChange(nextPage + 1);
+                onPageChange(nextPage + 1)
               }}
               page={page - 1}
               rowsPerPage={ALERTS_PAGE_SIZE}
@@ -102,13 +102,13 @@ export function AlertsTable({
         </TableFooter>
       </Table>
     </TableContainer>
-  );
+  )
 }
 
 function AlertTime({ dateTime }: Readonly<{ dateTime: string }>) {
   return (
-    <time dateTime={dateTime} style={{ whiteSpace: "nowrap" }}>
+    <time dateTime={dateTime} style={{ whiteSpace: 'nowrap' }}>
       {formatAlertDate(dateTime)}
     </time>
-  );
+  )
 }

@@ -1,8 +1,8 @@
-import { useAlerts } from "./logic/useAlerts";
-import { AlertsView } from "./views/AlertsView";
+import { useAlerts } from './logic/useAlerts'
+import { AlertsView } from './views/AlertsView'
 
 export function AlertsContainer() {
-  const alerts = useAlerts();
+  const alerts = useAlerts()
 
-  return <AlertsView {...alerts} />;
+  return <AlertsView {...alerts} />
 }

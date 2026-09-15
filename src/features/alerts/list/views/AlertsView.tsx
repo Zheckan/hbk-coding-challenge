@@ -1,8 +1,8 @@
-import { Stack, Typography } from "@mui/material";
+import { Stack, Typography } from '@mui/material'
 
-import { AlertsFilters } from "../components/AlertsFilters";
-import { AlertsResults } from "../components/AlertsResults";
-import type { UseAlertsResult } from "../logic/useAlerts";
+import { AlertsFilters } from '../components/AlertsFilters'
+import { AlertsResults } from '../components/AlertsResults'
+import type { UseAlertsResult } from '../logic/useAlerts'
 
 export function AlertsView({
   state,
@@ -43,5 +43,5 @@ export function AlertsView({
         state={state}
       />
     </Stack>
-  );
+  )
 }

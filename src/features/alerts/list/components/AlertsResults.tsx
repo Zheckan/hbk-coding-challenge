@@ -1,21 +1,21 @@
-import { Alert as MuiAlert, Typography } from "@mui/material";
+import { Alert as MuiAlert, Typography } from '@mui/material'
 
 import type {
   AlertsSortDirection,
   AlertsSortKey,
-} from "../logic/alerts-list-state";
-import type { AlertsViewState } from "../logic/useAlerts";
-import { AlertsTable } from "./AlertsTable";
-import { AlertsTableSkeleton } from "./AlertsTableSkeleton";
+} from '../logic/alerts-list-state'
+import type { AlertsViewState } from '../logic/useAlerts'
+import { AlertsTable } from './AlertsTable'
+import { AlertsTableSkeleton } from './AlertsTableSkeleton'
 
 type AlertsResultsProps = Readonly<{
-  state: AlertsViewState;
-  listSearch: string;
-  sort: AlertsSortKey;
-  direction: AlertsSortDirection;
-  onSort: (sort: AlertsSortKey) => void;
-  onPageChange: (page: number) => void;
-}>;
+  state: AlertsViewState
+  listSearch: string
+  sort: AlertsSortKey
+  direction: AlertsSortDirection
+  onSort: (sort: AlertsSortKey) => void
+  onPageChange: (page: number) => void
+}>
 
 export function AlertsResults({
   state,
@@ -26,9 +26,9 @@ export function AlertsResults({
   onPageChange,
 }: AlertsResultsProps) {
   switch (state.kind) {
-    case "loading":
-      return <AlertsTableSkeleton />;
-    case "invalid":
+    case 'loading':
+      return <AlertsTableSkeleton />
+    case 'invalid':
       return (
         <MuiAlert severity="warning">
           {state.errors.map((error) => (
@@ -37,12 +37,12 @@ export function AlertsResults({
             </Typography>
           ))}
         </MuiAlert>
-      );
-    case "error":
+      )
+    case 'error':
       return (
         <MuiAlert severity="error">Could not load weather alerts.</MuiAlert>
-      );
-    case "ready":
+      )
+    case 'ready':
       return (
         <AlertsTable
           alerts={state.alerts}
@@ -54,10 +54,10 @@ export function AlertsResults({
           sort={sort}
           total={state.total}
         />
-      );
+      )
     default: {
-      const _exhaustive: never = state;
-      return _exhaustive;
+      const _exhaustive: never = state
+      return _exhaustive
     }
   }
 }
