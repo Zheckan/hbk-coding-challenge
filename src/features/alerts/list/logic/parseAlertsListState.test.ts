@@ -54,6 +54,24 @@ describe('alerts list URL state', () => {
     })
   })
 
+  it('requests actual alerts unless the URL asks for every status', () => {
+    const now = new Date(2026, 8, 14, 12)
+    const defaultResult = parseAlertsListState(new URLSearchParams(), now)
+    const allStatusesResult = parseAlertsListState(
+      new URLSearchParams({ status: 'all' }),
+      now,
+    )
+
+    if (defaultResult.kind !== 'valid' || allStatusesResult.kind !== 'valid') {
+      throw new Error('Expected valid alert list state')
+    }
+
+    expect(defaultResult.state.status).toBe('Actual')
+    expect(defaultResult.query.status).toBe('Actual')
+    expect(allStatusesResult.state.status).toBe('')
+    expect(allStatusesResult.query).not.toHaveProperty('status')
+  })
+
   it('trims surrounding spaces from text search', () => {
     const result = parseAlertsListState(
       new URLSearchParams({ q: '  flood  ' }),

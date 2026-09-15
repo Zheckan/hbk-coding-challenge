@@ -41,6 +41,29 @@ export type AlertsListFilters = Pick<
   'issuedFrom' | 'issuedTo' | 'area' | 'severity' | 'status' | 'search'
 >
 
+export const DEFAULT_ALERTS_STATUS: AlertStatus = 'Actual'
+export const ALL_ALERT_STATUSES_PARAMETER = 'all'
+
+export const DEFAULT_ALERTS_FILTERS = {
+  issuedFrom: '',
+  issuedTo: '',
+  area: '',
+  severity: '',
+  status: DEFAULT_ALERTS_STATUS,
+  search: '',
+} satisfies AlertsListFilters
+
+export function hasNonDefaultFilters(filters: AlertsListFilters): boolean {
+  return (
+    filters.issuedFrom !== DEFAULT_ALERTS_FILTERS.issuedFrom ||
+    filters.issuedTo !== DEFAULT_ALERTS_FILTERS.issuedTo ||
+    filters.area !== DEFAULT_ALERTS_FILTERS.area ||
+    filters.severity !== DEFAULT_ALERTS_FILTERS.severity ||
+    filters.status !== DEFAULT_ALERTS_FILTERS.status ||
+    filters.search !== DEFAULT_ALERTS_FILTERS.search
+  )
+}
+
 export type AlertsDateBounds = Readonly<{
   min: string
   max: string

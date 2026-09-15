@@ -7,12 +7,15 @@ import {
   ALERTS_SORT_KEYS,
   type AlertsDateBounds,
   type AlertsListState,
+  ALL_ALERT_STATUSES_PARAMETER,
   DEFAULT_ALERTS_PAGE_SIZE,
   DEFAULT_ALERTS_SORT,
   DEFAULT_ALERTS_SORT_DIRECTION,
+  DEFAULT_ALERTS_STATUS,
   isAlertsPageSize,
   type ParsedAlertsListState,
 } from './alerts-list-state'
+import { formatLocalDate, parseLocalDate } from './local-dates'
 
 const NWS_ALERT_HISTORY_DAYS = 7
 
@@ -89,9 +92,11 @@ function parseState(searchParams: URLSearchParams): AlertsListState {
         (severity) => severity.toLowerCase() === severityParameter,
       ) ?? '',
     status:
-      ALERT_STATUSES.find(
-        (status) => status.toLowerCase() === statusParameter,
-      ) ?? '',
+      statusParameter === ALL_ALERT_STATUSES_PARAMETER
+        ? ''
+        : (ALERT_STATUSES.find(
+            (status) => status.toLowerCase() === statusParameter,
+          ) ?? DEFAULT_ALERTS_STATUS),
     search: (searchParams.get('q') ?? '').trim(),
     sort:
       ALERTS_SORT_KEYS.find((sortKey) => sortKey === sortParameter) ??
@@ -139,37 +144,6 @@ function parseSelectedDate(input: {
   return date
 }
 
-function parseLocalDate(value: string): Date | null {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
-    return null
-  }
-
-  const [yearText, monthText, dayText] = value.split('-')
-
-  if (
-    yearText === undefined ||
-    monthText === undefined ||
-    dayText === undefined
-  ) {
-    return null
-  }
-
-  const year = Number(yearText)
-  const month = Number(monthText)
-  const day = Number(dayText)
-  const date = new Date(year, month - 1, day)
-
-  if (
-    date.getFullYear() !== year ||
-    date.getMonth() !== month - 1 ||
-    date.getDate() !== day
-  ) {
-    return null
-  }
-
-  return date
-}
-
 function startOfLocalDay(date: Date): Date {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate())
 }
@@ -184,12 +158,4 @@ function endOfLocalDay(date: Date): Date {
     59,
     999,
   )
-}
-
-function formatLocalDate(date: Date): string {
-  const year = String(date.getFullYear()).padStart(4, '0')
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-
-  return `${year}-${month}-${day}`
 }

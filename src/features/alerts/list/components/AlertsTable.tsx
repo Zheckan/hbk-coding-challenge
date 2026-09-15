@@ -12,45 +12,23 @@ import {
 import { darken } from '@mui/material/styles'
 import { Link as RouterLink } from 'react-router-dom'
 
+import { AlertExpiryTime } from '@/features/alerts/common/components/AlertExpiryTime'
 import { AlertSeverityChip } from '@/features/alerts/common/components/AlertSeverityChip'
 import { formatAlertDate } from '@/features/alerts/common/logic/formatAlertDate'
-import { type Alert } from '@/features/alerts/common/model/alert'
 import { testIds } from '@/ui/utils/testIds'
-import {
-  type AlertsPageSize,
-  type AlertsSortDirection,
-  type AlertsSortKey,
-} from '../logic/alerts-list-state'
+import type { AlertsTableControls, AlertsViewState } from '../logic/useAlerts'
 import { AlertsPagination } from './AlertsPagination'
 import { AlertsTableHead } from './AlertsTableHead'
 
 type AlertsTableProps = Readonly<{
-  alerts: readonly Alert[]
-  listSearch: string
-  total: number
-  page: number
-  pageCount: number
-  pageSize: AlertsPageSize
-  sort: AlertsSortKey
-  direction: AlertsSortDirection
-  onSort: (sort: AlertsSortKey) => void
-  onPageChange: (page: number) => void
-  onPageSizeChange: (pageSize: AlertsPageSize) => void
+  now: number
+  state: Extract<AlertsViewState, { kind: 'ready' }>
+  tableControls: AlertsTableControls
 }>
 
-export function AlertsTable({
-  alerts,
-  listSearch,
-  total,
-  page,
-  pageCount,
-  pageSize,
-  sort,
-  direction,
-  onSort,
-  onPageChange,
-  onPageSizeChange,
-}: AlertsTableProps) {
+export function AlertsTable({ now, state, tableControls }: AlertsTableProps) {
+  const { listSearch } = tableControls
+
   return (
     <TableContainer
       aria-label="Weather alerts table"
@@ -81,13 +59,13 @@ export function AlertsTable({
         }}
       >
         <AlertsTableHead
-          direction={direction}
+          direction={tableControls.direction}
           kind="sortable"
-          onSort={onSort}
-          sort={sort}
+          onSort={tableControls.onSort}
+          sort={tableControls.sort}
         />
         <TableBody>
-          {alerts.map((alert) => (
+          {state.alerts.map((alert) => (
             <TableRow
               data-testid={testIds.alerts.list.row(alert.id)}
               hover
@@ -136,6 +114,24 @@ export function AlertsTable({
                 >
                   {alert.affectedArea}
                 </Box>
+                <Box
+                  component="span"
+                  sx={{
+                    color: 'text.secondary',
+                    display: { xs: 'block', md: 'none' },
+                    fontSize: '0.75rem',
+                    lineHeight: 1.35,
+                    mt: 0.5,
+                  }}
+                >
+                  <Box component="span" sx={{ display: 'block' }}>
+                    Issued <AlertTime dateTime={alert.issuedAt} />
+                  </Box>
+                  <Box component="span" sx={{ display: 'block' }}>
+                    Expires{' '}
+                    <AlertExpiryTime expiresAt={alert.expiresAt} now={now} />
+                  </Box>
+                </Box>
               </TableCell>
               <TableCell
                 sx={{
@@ -169,7 +165,7 @@ export function AlertsTable({
                   minWidth: 180,
                 }}
               >
-                <AlertTime dateTime={alert.expiresAt} />
+                <AlertExpiryTime expiresAt={alert.expiresAt} now={now} />
               </TableCell>
               <TableCell
                 sx={{
@@ -204,12 +200,13 @@ export function AlertsTable({
           ))}
         </TableBody>
         <AlertsPagination
-          onPageChange={onPageChange}
-          onPageSizeChange={onPageSizeChange}
-          page={page}
-          pageCount={pageCount}
-          pageSize={pageSize}
-          total={total}
+          hasMore={state.hasMore}
+          onPageChange={tableControls.onPageChange}
+          onPageSizeChange={tableControls.onPageSizeChange}
+          page={state.page}
+          pageCount={state.pageCount}
+          pageSize={state.pageSize}
+          total={state.total}
         />
       </Table>
     </TableContainer>

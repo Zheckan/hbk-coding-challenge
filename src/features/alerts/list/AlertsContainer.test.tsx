@@ -7,6 +7,7 @@ import listFixture from '@/test/fixtures/nws-alert-list.json'
 import { renderApp } from '@/test/renderApp'
 import { server } from '@/test/server'
 import { testIds } from '@/ui/utils/testIds'
+import { formatLocalDate } from './logic/local-dates'
 
 const completeFeature = listFixture.features[0]
 
@@ -19,7 +20,7 @@ describe('alerts list', () => {
     vi.unstubAllEnvs()
   })
 
-  it('shows a table-shaped skeleton while alerts load', () => {
+  it('shows a table-shaped skeleton while alerts load', async () => {
     server.use(
       http.get('https://api.weather.gov/alerts', async () => {
         await delay('infinite')
@@ -30,7 +31,7 @@ describe('alerts list', () => {
 
     renderApp({ initialEntries: ['/alerts'] })
 
-    const loadingState = screen.getByRole('status', {
+    const loadingState = await screen.findByRole('status', {
       name: 'Loading weather alerts',
     })
     const loadingTable = within(loadingState).getByRole('table', {
@@ -245,10 +246,14 @@ describe('alerts list', () => {
       }),
     ).toBeVisible()
     expect(
-      within(alertRow).getByText('Sep 14, 2026, 8:29 AM CDT'),
+      within(alertRow).getByRole('cell', {
+        name: 'Sep 14, 2026, 8:29 AM CDT',
+      }),
     ).toBeVisible()
     expect(
-      within(alertRow).getByText('Sep 14, 2026, 1:30 PM CDT'),
+      within(alertRow).getByRole('cell', {
+        name: /^Sep 14, 2026, 1:30 PM CDT/,
+      }),
     ).toBeVisible()
     expect(
       within(alertRow).getByRole('link', {
@@ -257,11 +262,52 @@ describe('alerts list', () => {
     ).toHaveAttribute('href', '/alerts/urn%3Aoid%3Atest.complete')
   })
 
+  it('marks alerts whose expiry time has passed', async () => {
+    const activeFeature = {
+      ...completeFeature,
+      id: 'https://api.weather.gov/alerts/active-alert',
+      properties: {
+        ...completeFeature.properties,
+        id: 'active-alert',
+        event: 'Winter Storm Watch',
+        expires: '2099-01-01T00:00:00+00:00',
+      },
+    }
+
+    server.use(
+      http.get('https://api.weather.gov/alerts', () =>
+        HttpResponse.json({
+          ...listFixture,
+          features: [completeFeature, activeFeature],
+        }),
+      ),
+    )
+
+    renderApp({ initialEntries: ['/alerts'] })
+
+    const table = await screen.findByRole('table', { name: 'Weather alerts' })
+    const expiredRow = within(table).getByTestId(
+      testIds.alerts.list.row('urn:oid:test.complete'),
+    )
+    const activeRow = within(table).getByTestId(
+      testIds.alerts.list.row('active-alert'),
+    )
+
+    expect(
+      within(expiredRow).getByRole('cell', { name: /Expired$/ }),
+    ).toBeVisible()
+    expect(within(activeRow).queryByText('Expired')).not.toBeInTheDocument()
+    expect(
+      within(activeRow).getByRole('cell', { name: /Active$/ }),
+    ).toBeVisible()
+  })
+
   it('lets keyboard users skip the filters and move to the results', async () => {
     const user = userEvent.setup()
 
     renderApp({ initialEntries: ['/alerts'] })
 
+    await screen.findByRole('link', { name: 'Skip to alert results' })
     await user.tab()
 
     const skipLink = screen.getByRole('link', {
@@ -358,6 +404,52 @@ describe('alerts list', () => {
     ).not.toBeInTheDocument()
   })
 
+  it('shows actual alerts by default', async () => {
+    let requestedUrl: URL | undefined
+
+    server.use(
+      http.get('https://api.weather.gov/alerts', ({ request }) => {
+        requestedUrl = new URL(request.url)
+        return HttpResponse.json(listFixture)
+      }),
+    )
+
+    renderApp({ initialEntries: ['/alerts'] })
+
+    expect(await screen.findByRole('combobox', { name: 'Status' })).toHaveValue(
+      'Actual',
+    )
+    await screen.findByRole('table', { name: 'Weather alerts' })
+    expect(requestedUrl?.searchParams.get('status')).toBe('actual')
+  })
+
+  it('requests every status when the user chooses all statuses', async () => {
+    const user = userEvent.setup()
+    let requestedUrl: URL | undefined
+
+    server.use(
+      http.get('https://api.weather.gov/alerts', ({ request }) => {
+        requestedUrl = new URL(request.url)
+        return HttpResponse.json(listFixture)
+      }),
+    )
+
+    const { router } = renderApp({ initialEntries: ['/alerts'] })
+
+    await screen.findByRole('table', { name: 'Weather alerts' })
+    await user.selectOptions(
+      screen.getByRole('combobox', { name: 'Status' }),
+      'All statuses',
+    )
+
+    await waitFor(() => {
+      expect(router.state.location.search).toBe('?status=all')
+    })
+    await waitFor(() => {
+      expect(requestedUrl?.searchParams.has('status')).toBe(false)
+    })
+  })
+
   it('updates the URL when filters and sorting change', async () => {
     const user = userEvent.setup()
     const { router } = renderApp({ initialEntries: ['/alerts'] })
@@ -398,6 +490,31 @@ describe('alerts list', () => {
     ).not.toHaveAttribute('aria-sort')
   })
 
+  it('offers compact sorting controls for narrow screens', async () => {
+    const user = userEvent.setup()
+    const { router } = renderApp({ initialEntries: ['/alerts'] })
+
+    await screen.findByRole('table', { name: 'Weather alerts' })
+    await user.selectOptions(
+      screen.getByRole('combobox', { name: 'Sort alerts by' }),
+      'Severity',
+    )
+
+    await waitFor(() => {
+      expect(router.state.location.search).toBe('?sort=severity&direction=asc')
+    })
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'Change sort direction to descending',
+      }),
+    )
+
+    await waitFor(() => {
+      expect(router.state.location.search).toBe('?sort=severity')
+    })
+  })
+
   it('clears filters without resetting the selected sort', async () => {
     const user = userEvent.setup()
     const { router } = renderApp({
@@ -414,7 +531,7 @@ describe('alerts list', () => {
     })
   })
 
-  it('does not request alerts for an invalid date', () => {
+  it('does not request alerts for an invalid date', async () => {
     let requestCount = 0
 
     server.use(
@@ -426,13 +543,13 @@ describe('alerts list', () => {
 
     renderApp({ initialEntries: ['/alerts?from=not-a-date'] })
 
-    expect(screen.getByRole('alert')).toHaveTextContent(
+    expect(await screen.findByRole('alert')).toHaveTextContent(
       'Issued from must be a valid date.',
     )
     expect(requestCount).toBe(0)
   })
 
-  it('explains an invalid date range without sending a request', () => {
+  it('explains an invalid date range without sending a request', async () => {
     let requestCount = 0
     const today = new Date()
     const yesterday = new Date(today)
@@ -451,7 +568,7 @@ describe('alerts list', () => {
       ],
     })
 
-    expect(screen.getByRole('alert')).toHaveTextContent(
+    expect(await screen.findByRole('alert')).toHaveTextContent(
       'Issued from must be on or before issued to.',
     )
     expect(requestCount).toBe(0)
@@ -539,7 +656,11 @@ describe('alerts list', () => {
 
     const pageInput = within(table).getByRole('spinbutton', { name: 'Page' })
     await user.clear(pageInput)
-    await user.type(pageInput, '3{Enter}')
+    await user.type(pageInput, '3')
+
+    expect(router.state.location.search).toBe('?pageSize=10')
+
+    await user.keyboard('{Enter}')
 
     await waitFor(() => {
       expect(router.state.location.search).toBe('?pageSize=10&page=3')
@@ -597,9 +718,10 @@ describe('alerts list', () => {
     renderApp({ initialEntries: ['/alerts'] })
 
     expect(await screen.findByText('Alert 01')).toBeVisible()
+    expect(screen.getByText('1–25 of 26 loaded, more available')).toBeVisible()
     expect(
-      screen.queryByRole('button', { name: 'Load more alerts' }),
-    ).not.toBeInTheDocument()
+      screen.getByRole('button', { name: 'Load more alerts' }),
+    ).toBeVisible()
 
     await user.click(screen.getByRole('button', { name: 'Go to next page' }))
 
@@ -608,7 +730,8 @@ describe('alerts list', () => {
     await user.click(screen.getByRole('button', { name: 'Load more alerts' }))
 
     expect(requestedCursor).toBe('next-page-token')
-    expect(screen.getByText('Coastal Flood Warning')).toBeVisible()
+    expect(await screen.findByText('Coastal Flood Warning')).toBeVisible()
+    expect(screen.getByText('26–27 of 27')).toBeVisible()
     expect(
       screen.queryByRole('button', { name: 'Load more alerts' }),
     ).not.toBeInTheDocument()
@@ -668,11 +791,3 @@ describe('alerts list', () => {
     ).not.toBeInTheDocument()
   })
 })
-
-function formatLocalDate(date: Date): string {
-  const year = String(date.getFullYear()).padStart(4, '0')
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-
-  return `${year}-${month}-${day}`
-}

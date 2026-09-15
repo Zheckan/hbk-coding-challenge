@@ -7,16 +7,12 @@ import type { UseAlertsResult } from '../logic/useAlerts'
 
 export function AlertsView({
   state,
-  listSearch,
+  now,
   filters,
   dateBounds,
-  sort,
-  direction,
   onFiltersChange,
   onClearFilters,
-  onSort,
-  onPageChange,
-  onPageSizeChange,
+  tableControls,
 }: UseAlertsResult) {
   const resultsRef = useRef<HTMLElement>(null)
 
@@ -82,13 +78,9 @@ export function AlertsView({
           tabIndex={-1}
         >
           <AlertsResults
-            direction={direction}
-            listSearch={listSearch}
-            onPageChange={onPageChange}
-            onPageSizeChange={onPageSizeChange}
-            onSort={onSort}
-            sort={sort}
+            now={now}
             state={state}
+            tableControls={tableControls}
           />
         </Box>
       </Stack>

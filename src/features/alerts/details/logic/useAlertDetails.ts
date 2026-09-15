@@ -12,6 +12,7 @@ import {
   isRetryableNwsError,
   shouldRetryNwsRequest,
 } from '@/features/alerts/common/api/nws-error-policy'
+import { useCurrentTime } from '@/features/alerts/common/logic/useCurrentTime'
 import type { Alert, AlertPage } from '@/features/alerts/common/model/alert'
 
 export type AlertDetailsViewState =
@@ -26,12 +27,14 @@ export type AlertDetailsViewState =
 
 export type UseAlertDetailsResult = Readonly<{
   state: AlertDetailsViewState
+  now: number
   backTo: string
 }>
 
 export function useAlertDetails(alertId: string): UseAlertDetailsResult {
   const queryClient = useQueryClient()
   const location = useLocation()
+  const now = useCurrentTime()
   const cachedAlert = findAlertInListCache(queryClient, alertId)
   const alertQuery = useQuery({
     queryKey: ['alerts', 'detail', alertId],
@@ -67,6 +70,7 @@ export function useAlertDetails(alertId: string): UseAlertDetailsResult {
 
   return {
     state,
+    now,
     backTo: `/alerts${location.search}`,
   }
 }

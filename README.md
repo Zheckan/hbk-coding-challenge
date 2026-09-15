@@ -76,12 +76,14 @@ pagination. Material UI and Emotion provide the component system and styling.
 - The `/alerts` endpoint only exposes alerts issued during the past seven days,
   so the date controls use the same range.
 - NWS limits an alert-list page to 500 records. When it returns a pagination
-  cursor, the last local page offers a **Load more alerts** action.
+  cursor, every table page offers a **Load more alerts** action, and the table
+  footer marks its count as loaded alerts only.
 - Area, severity, status, and issued-date filters are sent to NWS. Text search,
   sorting, and table pagination operate on the pages already loaded in the
   browser.
 - Live alert data changes continuously and may include test messages or missing
-  optional fields.
+  optional fields. The list shows actual alerts by default. Choose **All
+  statuses** to include tests, exercises, and other messages.
 
 See the [official NWS API documentation](https://www.weather.gov/documentation/services-web-api)
 for the upstream contract.

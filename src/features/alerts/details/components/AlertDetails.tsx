@@ -2,6 +2,7 @@ import { Box, Link, Paper, Stack, Typography } from '@mui/material'
 import { type ReactNode, useEffect, useRef } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 
+import { AlertExpiryTime } from '@/features/alerts/common/components/AlertExpiryTime'
 import { AlertSeverityChip } from '@/features/alerts/common/components/AlertSeverityChip'
 import { formatAlertDate } from '@/features/alerts/common/logic/formatAlertDate'
 import type { Alert } from '@/features/alerts/common/model/alert'
@@ -9,9 +10,10 @@ import type { Alert } from '@/features/alerts/common/model/alert'
 type AlertDetailsProps = Readonly<{
   alert: Alert
   backTo: string
+  now: number
 }>
 
-export function AlertDetails({ alert, backTo }: AlertDetailsProps) {
+export function AlertDetails({ alert, backTo, now }: AlertDetailsProps) {
   const headingRef = useRef<HTMLHeadingElement>(null)
 
   useEffect(() => {
@@ -75,7 +77,7 @@ export function AlertDetails({ alert, backTo }: AlertDetailsProps) {
             <AlertTime dateTime={alert.onsetAt} />
           </DetailItem>
           <DetailItem label="Expiry time">
-            <AlertTime dateTime={alert.expiresAt} />
+            <AlertExpiryTime expiresAt={alert.expiresAt} now={now} />
           </DetailItem>
           <DetailItem label="Expected end time">
             <AlertTime dateTime={alert.expectedEndAt} />

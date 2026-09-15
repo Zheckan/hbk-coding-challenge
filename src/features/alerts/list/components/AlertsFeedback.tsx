@@ -1,5 +1,6 @@
 import { Alert as MuiAlert, Button, Typography } from '@mui/material'
 
+import { NwsRateLimitAlert } from '@/features/alerts/common/components/NwsRateLimitAlert'
 import type { AlertsViewState } from '../logic/useAlerts'
 
 type AlertsFeedbackState = Extract<
@@ -22,20 +23,7 @@ export function AlertsFeedback({
         </MuiAlert>
       )
     case 'rate-limit':
-      return (
-        <MuiAlert
-          action={
-            <Button color="inherit" onClick={state.onRetry} size="small">
-              Try again
-            </Button>
-          }
-          aria-label="NWS rate limit reached"
-          severity="warning"
-        >
-          The National Weather Service is receiving too many requests. Please
-          wait a moment, then try again.
-        </MuiAlert>
-      )
+      return <NwsRateLimitAlert onRetry={state.onRetry} />
     case 'request-error':
       return (
         <MuiAlert

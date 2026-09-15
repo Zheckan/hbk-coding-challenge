@@ -29,9 +29,9 @@ const alertPropertiesSchema = z.object({
   ends: optionalDateTimeSchema,
   status: z.enum(ALERT_STATUSES),
   messageType: z.enum(ALERT_MESSAGE_TYPES),
-  severity: z.enum(ALERT_SEVERITIES),
-  certainty: z.enum(ALERT_CERTAINTIES),
-  urgency: z.enum(ALERT_URGENCIES),
+  severity: z.enum(ALERT_SEVERITIES).catch('Unknown'),
+  certainty: z.enum(ALERT_CERTAINTIES).catch('Unknown'),
+  urgency: z.enum(ALERT_URGENCIES).catch('Unknown'),
   event: z.string(),
   sender: z.string(),
   senderName: z.string(),
@@ -48,7 +48,7 @@ const alertFeatureSchema = z.object({
 
 const alertCollectionSchema = z.object({
   type: z.literal('FeatureCollection'),
-  features: z.array(alertFeatureSchema),
+  features: z.array(z.unknown()),
   pagination: z
     .object({
       next: z.url().optional(),
@@ -108,7 +108,11 @@ export function parseAlertCollection(input: unknown): AlertPage {
   const collection = alertCollectionSchema.parse(input)
 
   return {
-    alerts: collection.features.map(toAlert),
+    alerts: collection.features.flatMap((feature) => {
+      const result = alertFeatureSchema.safeParse(feature)
+
+      return result.success ? [toAlert(result.data)] : []
+    }),
     nextCursor: readNextCursor(collection.pagination?.next),
   }
 }

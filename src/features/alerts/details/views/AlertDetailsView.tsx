@@ -2,19 +2,24 @@ import { Alert as MuiAlert, Button, Link, Skeleton, Stack } from '@mui/material'
 import type { ReactNode } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 
+import { NwsRateLimitAlert } from '@/features/alerts/common/components/NwsRateLimitAlert'
 import { AlertDetails } from '../components/AlertDetails'
 import type {
   AlertDetailsViewState,
   UseAlertDetailsResult,
 } from '../logic/useAlertDetails'
 
-export function AlertDetailsView({ state, backTo }: UseAlertDetailsResult) {
+export function AlertDetailsView({
+  state,
+  now,
+  backTo,
+}: UseAlertDetailsResult) {
   if (state.kind === 'loading') {
     return <AlertDetailsSkeleton />
   }
 
   if (state.kind === 'ready') {
-    return <AlertDetails alert={state.alert} backTo={backTo} />
+    return <AlertDetails alert={state.alert} backTo={backTo} now={now} />
   }
 
   return <AlertDetailsFeedback backTo={backTo} state={state} />
@@ -49,20 +54,7 @@ function AlertDetailsFeedback({
       )
       break
     case 'rate-limit':
-      feedback = (
-        <MuiAlert
-          action={
-            <Button color="inherit" onClick={state.onRetry} size="small">
-              Try again
-            </Button>
-          }
-          aria-label="NWS rate limit reached"
-          severity="warning"
-        >
-          The National Weather Service is receiving too many requests. Please
-          wait a moment, then try again.
-        </MuiAlert>
-      )
+      feedback = <NwsRateLimitAlert onRetry={state.onRetry} />
       break
     case 'request-error':
       feedback = (

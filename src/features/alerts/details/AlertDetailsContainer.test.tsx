@@ -18,11 +18,16 @@ describe('alert details', () => {
     vi.unstubAllEnvs()
   })
 
-  it('opens a loaded alert and returns to the same list', async () => {
+  it('opens a loaded alert and returns to the same list without reloading it', async () => {
     const user = userEvent.setup()
+    let listRequestCount = 0
     let detailRequestCount = 0
 
     server.use(
+      http.get('https://api.weather.gov/alerts', () => {
+        listRequestCount += 1
+        return HttpResponse.json(listFixture)
+      }),
       http.get('https://api.weather.gov/alerts/*', () => {
         detailRequestCount += 1
         return HttpResponse.json(completeFeature)
@@ -61,6 +66,10 @@ describe('alert details', () => {
     expect(
       screen.getByRole('searchbox', { name: 'Search alerts' }),
     ).toHaveValue('flood')
+    expect(
+      screen.queryByRole('status', { name: 'Updating weather alerts' }),
+    ).not.toBeInTheDocument()
+    expect(listRequestCount).toBe(1)
   })
 
   it('loads and displays every alert detail from a direct URL', async () => {
@@ -156,6 +165,22 @@ describe('alert details', () => {
       'href',
       'https://api.weather.gov/alerts/urn:oid:test.complete',
     )
+  })
+
+  it('marks an alert whose expiry time has passed', async () => {
+    server.use(
+      http.get('https://api.weather.gov/alerts/*', () =>
+        HttpResponse.json(completeFeature),
+      ),
+    )
+
+    renderApp({ initialEntries: ['/alerts/urn%3Aoid%3Atest.complete'] })
+
+    const information = await screen.findByRole('region', {
+      name: 'Alert information',
+    })
+
+    expect(within(information).getByText('Expired')).toBeVisible()
   })
 
   it('explains when optional alert details are missing', async () => {

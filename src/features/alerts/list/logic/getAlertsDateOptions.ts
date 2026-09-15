@@ -1,4 +1,5 @@
 import type { AlertsDateBounds } from './alerts-list-state'
+import { formatLocalDate, parseLocalDate } from './local-dates'
 
 export type AlertsDateOption = Readonly<{
   value: string
@@ -15,6 +16,11 @@ export function getAlertsDateOptions(
   })
   const currentDate = parseLocalDate(dateBounds.min)
   const lastDate = parseLocalDate(dateBounds.max)
+
+  if (currentDate === null || lastDate === null) {
+    return []
+  }
+
   const options: AlertsDateOption[] = []
 
   while (currentDate <= lastDate) {
@@ -26,20 +32,4 @@ export function getAlertsDateOptions(
   }
 
   return options
-}
-
-function parseLocalDate(value: string): Date {
-  return new Date(
-    Number(value.slice(0, 4)),
-    Number(value.slice(5, 7)) - 1,
-    Number(value.slice(8, 10)),
-  )
-}
-
-function formatLocalDate(date: Date): string {
-  const year = String(date.getFullYear()).padStart(4, '0')
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-
-  return `${year}-${month}-${day}`
 }

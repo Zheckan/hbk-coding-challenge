@@ -64,6 +64,14 @@ export function AlertsTableSkeleton() {
                     sx={{ display: { xs: 'block', md: 'none' }, mt: 0.5 }}
                     width="90%"
                   />
+                  <Skeleton
+                    sx={{ display: { xs: 'block', md: 'none' } }}
+                    width="65%"
+                  />
+                  <Skeleton
+                    sx={{ display: { xs: 'block', md: 'none' } }}
+                    width="65%"
+                  />
                 </TableCell>
                 <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}>
                   <Skeleton width="90%" />

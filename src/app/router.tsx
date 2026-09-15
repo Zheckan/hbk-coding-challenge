@@ -5,18 +5,36 @@ import {
 } from 'react-router-dom'
 
 import { AppLayout } from '@/app/AppLayout'
-import { NotFoundPage } from '@/app/NotFoundPage'
-import { AlertDetailsPage } from '@/pages/AlertDetailsPage'
-import { AlertsPage } from '@/pages/AlertsPage'
 
 export const appRoutes = [
   {
     element: <AppLayout />,
+    hydrateFallbackElement: (
+      <div aria-label="Loading application" role="status">
+        Loading…
+      </div>
+    ),
     children: [
       { index: true, element: <Navigate replace to="/alerts" /> },
-      { path: '/alerts', element: <AlertsPage /> },
-      { path: '/alerts/:alertId', element: <AlertDetailsPage /> },
-      { path: '*', element: <NotFoundPage /> },
+      {
+        path: '/alerts',
+        lazy: async () => ({
+          Component: (await import('@/pages/AlertsPage')).AlertsPage,
+        }),
+      },
+      {
+        path: '/alerts/:alertId',
+        lazy: async () => ({
+          Component: (await import('@/pages/AlertDetailsPage'))
+            .AlertDetailsPage,
+        }),
+      },
+      {
+        path: '*',
+        lazy: async () => ({
+          Component: (await import('@/pages/NotFoundPage')).NotFoundPage,
+        }),
+      },
     ],
   },
 ] satisfies RouteObject[]

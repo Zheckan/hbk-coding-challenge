@@ -9,9 +9,10 @@ import {
   MARINE_AREA_OPTIONS,
   STATE_TERRITORY_AREA_OPTIONS,
 } from '../logic/alert-area-options'
-import type {
-  AlertsDateBounds,
-  AlertsListFilters,
+import {
+  type AlertsDateBounds,
+  type AlertsListFilters,
+  hasNonDefaultFilters,
 } from '../logic/alerts-list-state'
 import { AlertsDateFilter } from './AlertsDateFilter'
 
@@ -28,7 +29,7 @@ export function AlertsFilters({
   onChange,
   onClear,
 }: AlertsFiltersProps) {
-  const hasFilters = Object.values(filters).some((value) => value !== '')
+  const hasFilters = hasNonDefaultFilters(filters)
   const unsupportedArea =
     filters.area !== '' && !isAlertAreaCode(filters.area) ? filters.area : null
 

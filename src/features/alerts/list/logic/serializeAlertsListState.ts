@@ -1,8 +1,10 @@
 import {
   type AlertsListState,
+  ALL_ALERT_STATUSES_PARAMETER,
   DEFAULT_ALERTS_PAGE_SIZE,
   DEFAULT_ALERTS_SORT,
   DEFAULT_ALERTS_SORT_DIRECTION,
+  DEFAULT_ALERTS_STATUS,
 } from './alerts-list-state'
 
 export function serializeAlertsListState(
@@ -14,7 +16,16 @@ export function serializeAlertsListState(
   setWhenPresent(searchParams, 'to', state.issuedTo)
   setWhenPresent(searchParams, 'area', state.area)
   setWhenPresent(searchParams, 'severity', state.severity.toLowerCase())
-  setWhenPresent(searchParams, 'status', state.status.toLowerCase())
+
+  if (state.status !== DEFAULT_ALERTS_STATUS) {
+    searchParams.set(
+      'status',
+      state.status === ''
+        ? ALL_ALERT_STATUSES_PARAMETER
+        : state.status.toLowerCase(),
+    )
+  }
+
   setWhenPresent(searchParams, 'q', state.search)
 
   if (state.sort !== DEFAULT_ALERTS_SORT) {

@@ -24,6 +24,7 @@ type AlertsPaginationProps = Readonly<{
   pageCount: number
   pageSize: AlertsPageSize
   total: number
+  hasMore: boolean
   onPageChange: (page: number) => void
   onPageSizeChange: (pageSize: AlertsPageSize) => void
 }>
@@ -33,6 +34,7 @@ export function AlertsPagination({
   pageCount,
   pageSize,
   total,
+  hasMore,
   onPageChange,
   onPageSizeChange,
 }: AlertsPaginationProps) {
@@ -42,25 +44,10 @@ export function AlertsPagination({
   })
   const pageInput = pageDraft.page === page ? pageDraft.value : String(page)
 
-  function handlePageInput(value: string): void {
-    setPageDraft({ page, value })
-
-    const nextPage = Number(value)
-
-    if (
-      Number.isSafeInteger(nextPage) &&
-      nextPage >= 1 &&
-      nextPage <= pageCount &&
-      nextPage !== page
-    ) {
-      onPageChange(nextPage)
-    }
-  }
-
   function handlePageInputCommit(): void {
     const requestedPage = Number(pageInput)
 
-    if (!Number.isSafeInteger(requestedPage)) {
+    if (pageInput === '' || !Number.isSafeInteger(requestedPage)) {
       setPageDraft({ page, value: String(page) })
       return
     }
@@ -75,6 +62,7 @@ export function AlertsPagination({
 
   const firstRow = (page - 1) * pageSize + 1
   const lastRow = Math.min(page * pageSize, total)
+  const rowRange = `${String(firstRow)}–${String(lastRow)} of ${String(total)}`
 
   return (
     <TableFooter>
@@ -116,7 +104,7 @@ export function AlertsPagination({
             </FormControl>
 
             <Typography color="text.secondary" variant="body2">
-              {firstRow}–{lastRow} of {total}
+              {hasMore ? `${rowRange} loaded, more available` : rowRange}
             </Typography>
 
             <Stack direction="row" sx={{ alignItems: 'center', gap: 0.5 }}>
@@ -125,7 +113,7 @@ export function AlertsPagination({
                 label="Page"
                 onBlur={handlePageInputCommit}
                 onChange={(event) => {
-                  handlePageInput(event.target.value)
+                  setPageDraft({ page, value: event.target.value })
                 }}
                 onKeyDown={(event) => {
                   if (event.key === 'Enter') {

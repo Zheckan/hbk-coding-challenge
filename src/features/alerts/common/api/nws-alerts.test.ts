@@ -101,10 +101,56 @@ describe('fetchAlerts', () => {
     })
   })
 
+  it('skips an alert that does not match the NWS alert shape', async () => {
+    server.use(
+      http.get('https://api.weather.gov/alerts', () =>
+        HttpResponse.json({
+          ...listFixture,
+          features: [detailFixture, { type: 'Feature', properties: {} }],
+        }),
+      ),
+    )
+
+    const result = await fetchAlerts({})
+
+    expect(result.alerts.map((alert) => alert.id)).toEqual([
+      'urn:oid:test.complete',
+    ])
+  })
+
+  it('reads unrecognized severity, certainty, and urgency values as Unknown', async () => {
+    server.use(
+      http.get('https://api.weather.gov/alerts', () =>
+        HttpResponse.json({
+          ...listFixture,
+          features: [
+            {
+              ...detailFixture,
+              properties: {
+                ...detailFixture.properties,
+                severity: 'Catastrophic',
+                certainty: 'Probable',
+                urgency: 'Soon',
+              },
+            },
+          ],
+        }),
+      ),
+    )
+
+    const [alert] = (await fetchAlerts({})).alerts
+
+    expect(alert).toMatchObject({
+      severity: 'Unknown',
+      certainty: 'Unknown',
+      urgency: 'Unknown',
+    })
+  })
+
   it('reports an invalid NWS response through the public error type', async () => {
     server.use(
       http.get('https://api.weather.gov/alerts', () =>
-        HttpResponse.json({ type: 'FeatureCollection', features: [{}] }),
+        HttpResponse.json({ type: 'FeatureCollection', features: {} }),
       ),
     )
 

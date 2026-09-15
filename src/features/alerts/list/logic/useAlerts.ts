@@ -11,14 +11,16 @@ import {
   isRetryableNwsError,
   shouldRetryNwsRequest,
 } from '@/features/alerts/common/api/nws-error-policy'
+import { useCurrentTime } from '@/features/alerts/common/logic/useCurrentTime'
 import type { Alert } from '@/features/alerts/common/model/alert'
-import type {
-  AlertsDateBounds,
-  AlertsListFilters,
-  AlertsListState,
-  AlertsPageSize,
-  AlertsSortDirection,
-  AlertsSortKey,
+import {
+  type AlertsDateBounds,
+  type AlertsListFilters,
+  type AlertsListState,
+  type AlertsPageSize,
+  type AlertsSortDirection,
+  type AlertsSortKey,
+  DEFAULT_ALERTS_FILTERS,
 } from './alerts-list-state'
 import { getAlertsListRows } from './getAlertsListRows'
 import { parseAlertsListState } from './parseAlertsListState'
@@ -57,22 +59,28 @@ type AlertsPaginationState = Readonly<{
   onLoadMore: () => void
 }>
 
-export type UseAlertsResult = Readonly<{
-  state: AlertsViewState
+export type AlertsTableControls = Readonly<{
   listSearch: string
-  filters: AlertsListFilters
-  dateBounds: AlertsDateBounds
   sort: AlertsSortKey
   direction: AlertsSortDirection
-  onFiltersChange: (filters: AlertsListFilters) => void
-  onClearFilters: () => void
   onSort: (sort: AlertsSortKey) => void
   onPageChange: (page: number) => void
   onPageSizeChange: (pageSize: AlertsPageSize) => void
 }>
 
+export type UseAlertsResult = Readonly<{
+  state: AlertsViewState
+  now: number
+  filters: AlertsListFilters
+  dateBounds: AlertsDateBounds
+  onFiltersChange: (filters: AlertsListFilters) => void
+  onClearFilters: () => void
+  tableControls: AlertsTableControls
+}>
+
 export function useAlerts(): UseAlertsResult {
   const [searchParams, setSearchParams] = useSearchParams()
+  const now = useCurrentTime()
   const parsedState = parseAlertsListState(searchParams)
   const listState = parsedState.state
   const alertsQuery = useInfiniteQuery({
@@ -143,11 +151,12 @@ export function useAlerts(): UseAlertsResult {
   } else {
     const loadedAlerts = alertsQuery.data.pages.flatMap((page) => page.alerts)
     const listRows = getAlertsListRows(loadedAlerts, listState)
+    const isRefreshing =
+      alertsQuery.isFetching && !alertsQuery.isFetchingNextPage
     const paginationState: AlertsPaginationState = {
       hasMore: alertsQuery.hasNextPage,
       isLoadingMore: alertsQuery.isFetchingNextPage,
-      isLoadMoreDisabled:
-        alertsQuery.isFetching && !alertsQuery.isFetchingNextPage,
+      isLoadMoreDisabled: isRefreshing,
       loadMoreFailed: alertsQuery.isFetchNextPageError,
       onLoadMore: () => {
         void alertsQuery.fetchNextPage()
@@ -167,36 +176,31 @@ export function useAlerts(): UseAlertsResult {
             page: listRows.page,
             pageCount: listRows.pageCount,
             pageSize: listState.pageSize,
-            isUpdating:
-              alertsQuery.isFetching && !alertsQuery.isFetchingNextPage,
+            isUpdating: isRefreshing,
             ...paginationState,
           }
   }
 
   return {
     state,
-    listSearch: serializeAlertsListState(listState).toString(),
+    now,
     filters: selectFilters(listState),
     dateBounds: parsedState.dateBounds,
-    sort: listState.sort,
-    direction: listState.direction,
     onFiltersChange: handleFiltersChange,
     onClearFilters: () => {
-      handleFiltersChange({
-        issuedFrom: '',
-        issuedTo: '',
-        area: '',
-        severity: '',
-        status: '',
-        search: '',
-      })
+      handleFiltersChange(DEFAULT_ALERTS_FILTERS)
     },
-    onSort: handleSort,
-    onPageChange: (page) => {
-      updateUrl({ ...listState, page })
-    },
-    onPageSizeChange: (pageSize) => {
-      updateUrl({ ...listState, page: 1, pageSize })
+    tableControls: {
+      listSearch: serializeAlertsListState(listState).toString(),
+      sort: listState.sort,
+      direction: listState.direction,
+      onSort: handleSort,
+      onPageChange: (page) => {
+        updateUrl({ ...listState, page })
+      },
+      onPageSizeChange: (pageSize) => {
+        updateUrl({ ...listState, page: 1, pageSize })
+      },
     },
   }
 }

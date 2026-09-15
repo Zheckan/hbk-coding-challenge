@@ -18,9 +18,9 @@ Docs: https://www.weather.gov/documentation/services-web-api
 
 ## Implementation approach
 
-We will start with the API integration. This will show us the real endpoints, response structure, date formats, pagination, and error behavior before we design the UI around them.
+We started with the API integration. It showed us the real endpoints, response structure, date formats, pagination, and error behavior before we designed the UI around them.
 
-After we understand the API, we will build the UI using representative response data.
+After we understood the API, we built the UI using representative response data.
 
 ## Stages
 
@@ -104,10 +104,9 @@ Add tests with each stage. Run `pnpm fix` before marking a stage complete.
 - [x] Support keyboard operation, visible focus, field labels, and announced result or error updates.
 - [x] Expose table sort direction correctly and respect reduced-motion preferences.
 - [x] Check color contrast and test the main flow at desktop and mobile widths.
+- [x] Keep column-header sorting on wide tables and provide compact field and direction controls on narrow screens.
 
-- !Important @note: mobile sort control. On narrow screens header sort is cramped once columns collapse, so sorting stays desktop-only. Filters and details still work on mobile. A compact field + direction control would be the next step for a phone-first product. But for now, I could not find a good way to make it work on mobile, so I decided to remove this form mobile and keep it desktop-only. This is better than a broken mobile sort.
-
-**Complete when:** the main flow works with keyboard input at narrow and wide widths. Desktop sorting works. Mobile sort is an explicit deferral, not an accident.
+**Complete when:** the main flow and sorting work with keyboard input at narrow and wide widths.
 
 ### Stage 8: Final testing, documentation, and delivery
 

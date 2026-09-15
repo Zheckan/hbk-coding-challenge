@@ -28,6 +28,10 @@ _Avoid_: Expiry time
 The time after which the alert message itself is no longer valid.
 _Avoid_: Expected end time
 
+**Expired alert**:
+An alert whose expiry time has passed. The weather event it describes may still continue.
+_Avoid_: Ended alert, inactive alert
+
 **Affected area**:
 The human-readable geographic area to which the alert applies.
 _Avoid_: Location
