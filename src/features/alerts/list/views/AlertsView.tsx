@@ -6,6 +6,7 @@ import type { UseAlertsResult } from "../logic/useAlerts";
 
 export function AlertsView({
   state,
+  listSearch,
   filters,
   dateBounds,
   sort,
@@ -35,6 +36,7 @@ export function AlertsView({
 
       <AlertsResults
         direction={direction}
+        listSearch={listSearch}
         onPageChange={onPageChange}
         onSort={onSort}
         sort={sort}

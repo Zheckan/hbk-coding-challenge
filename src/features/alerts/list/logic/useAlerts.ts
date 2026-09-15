@@ -27,6 +27,7 @@ export type AlertsViewState =
 
 export type UseAlertsResult = Readonly<{
   state: AlertsViewState;
+  listSearch: string;
   filters: AlertsListFilters;
   dateBounds: AlertsDateBounds;
   sort: AlertsSortKey;
@@ -98,6 +99,7 @@ export function useAlerts(): UseAlertsResult {
 
   return {
     state,
+    listSearch: serializeAlertsListState(listState).toString(),
     filters: selectFilters(listState),
     dateBounds: parsedState.dateBounds,
     sort: listState.sort,

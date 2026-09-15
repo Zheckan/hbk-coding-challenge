@@ -10,6 +10,7 @@ import { AlertsTableSkeleton } from "./AlertsTableSkeleton";
 
 type AlertsResultsProps = Readonly<{
   state: AlertsViewState;
+  listSearch: string;
   sort: AlertsSortKey;
   direction: AlertsSortDirection;
   onSort: (sort: AlertsSortKey) => void;
@@ -18,6 +19,7 @@ type AlertsResultsProps = Readonly<{
 
 export function AlertsResults({
   state,
+  listSearch,
   sort,
   direction,
   onSort,
@@ -45,6 +47,7 @@ export function AlertsResults({
         <AlertsTable
           alerts={state.alerts}
           direction={direction}
+          listSearch={listSearch}
           onPageChange={onPageChange}
           onSort={onSort}
           page={state.page}

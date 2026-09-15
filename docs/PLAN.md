@@ -74,13 +74,13 @@ Add tests with each stage. Run `pnpm fix` before marking a stage complete.
 
 ### Stage 5: Alert details
 
-- [ ] Navigate from each table row to its alert detail route.
-- [ ] Fetch the selected alert when it is not already available from the list.
-- [ ] Show its event, headline, severity, urgency, certainty, area, times, instructions, description, sender, message type, and status.
-- [ ] Preserve NWS line breaks and provide a link to the source alert.
-- [ ] Return to the list without losing its URL state.
-- [ ] Move focus to the detail heading after navigation.
-- [ ] Test list-to-detail navigation, direct detail URLs, missing optional fields, and return navigation.
+- [x] Navigate from each table row to its alert detail route.
+- [x] Fetch the selected alert when it is not already available from the list.
+- [x] Show its event, headline, severity, urgency, certainty, area, times, instructions, description, sender, message type, and status.
+- [x] Preserve NWS line breaks and provide a link to the source alert.
+- [x] Return to the list without losing its URL state.
+- [x] Move focus to the detail heading after navigation.
+- [x] Test list-to-detail navigation, direct detail URLs, missing optional fields, and return navigation.
 
 **Complete when:** both table navigation and a direct detail URL show the correct alert, and returning restores the list state.
 

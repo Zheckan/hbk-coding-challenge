@@ -1,6 +1,4 @@
 import {
-  Chip,
-  type ChipProps,
   Link,
   Paper,
   Table,
@@ -13,21 +11,20 @@ import {
 } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 
-import {
-  type Alert,
-  type AlertSeverity,
-} from "@/features/alerts/common/model/alert";
+import { AlertSeverityChip } from "@/features/alerts/common/components/AlertSeverityChip";
+import { formatAlertDate } from "@/features/alerts/common/logic/formatAlertDate";
+import { type Alert } from "@/features/alerts/common/model/alert";
 import { testIds } from "@/ui/utils/testIds";
 import {
   ALERTS_PAGE_SIZE,
   type AlertsSortDirection,
   type AlertsSortKey,
 } from "../logic/alerts-list-state";
-import { formatAlertDate } from "../logic/formatAlertDate";
 import { AlertsTableHead } from "./AlertsTableHead";
 
 type AlertsTableProps = Readonly<{
   alerts: readonly Alert[];
+  listSearch: string;
   total: number;
   page: number;
   sort: AlertsSortKey;
@@ -36,16 +33,9 @@ type AlertsTableProps = Readonly<{
   onPageChange: (page: number) => void;
 }>;
 
-const severityColors = {
-  Extreme: "error",
-  Severe: "warning",
-  Moderate: "info",
-  Minor: "success",
-  Unknown: "default",
-} satisfies Record<AlertSeverity, ChipProps["color"]>;
-
 export function AlertsTable({
   alerts,
+  listSearch,
   total,
   page,
   sort,
@@ -69,11 +59,7 @@ export function AlertsTable({
               key={alert.id}
             >
               <TableCell>
-                <Chip
-                  color={severityColors[alert.severity]}
-                  label={alert.severity}
-                  size="small"
-                />
+                <AlertSeverityChip severity={alert.severity} />
               </TableCell>
               <TableCell component="th" scope="row">
                 {alert.event}
@@ -90,7 +76,9 @@ export function AlertsTable({
                 <Link
                   aria-label={`View details for ${alert.event}`}
                   component={RouterLink}
-                  to={`/alerts/${encodeURIComponent(alert.id)}`}
+                  to={`/alerts/${encodeURIComponent(alert.id)}${
+                    listSearch === "" ? "" : `?${listSearch}`
+                  }`}
                 >
                   View details
                 </Link>

@@ -53,8 +53,5 @@ export const testIds = defineTestIds({
     list: {
       row: (alertId: string) => alertId,
     },
-    details: {
-      alertId: true,
-    },
   },
 });
