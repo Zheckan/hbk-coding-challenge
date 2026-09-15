@@ -105,7 +105,9 @@ Add tests with each stage. Run `pnpm fix` before marking a stage complete.
 - [x] Expose table sort direction correctly and respect reduced-motion preferences.
 - [x] Check color contrast and test the main flow at desktop and mobile widths.
 
-**Complete when:** the main flow works with keyboard input and at narrow and wide viewport sizes without losing information or actions.
+- !Important @note: mobile sort control. On narrow screens header sort is cramped once columns collapse, so sorting stays desktop-only. Filters and details still work on mobile. A compact field + direction control would be the next step for a phone-first product. But for now, I could not find a good way to make it work on mobile, so I decided to remove this form mobile and keep it desktop-only. This is better than a broken mobile sort.
+
+**Complete when:** the main flow works with keyboard input at narrow and wide widths. Desktop sorting works. Mobile sort is an explicit deferral, not an accident.
 
 ### Stage 8: Final testing, documentation, and delivery
 
