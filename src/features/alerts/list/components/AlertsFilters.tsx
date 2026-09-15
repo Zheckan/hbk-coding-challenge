@@ -36,7 +36,10 @@ export function AlertsFilters({
     <Paper
       aria-labelledby="alerts-filters-heading"
       component="section"
-      sx={{ p: 2 }}
+      sx={{
+        borderColor: 'divider',
+        p: { xs: 2, sm: 2.5 },
+      }}
       variant="outlined"
     >
       <Stack spacing={2}>
@@ -173,8 +176,13 @@ export function AlertsFilters({
           />
         </Box>
 
-        <Box>
-          <Button disabled={!hasFilters} onClick={onClear} type="button">
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Button
+            disabled={!hasFilters}
+            onClick={onClear}
+            sx={{ width: { xs: '100%', sm: 'auto' } }}
+            type="button"
+          >
             Clear filters
           </Button>
         </Box>

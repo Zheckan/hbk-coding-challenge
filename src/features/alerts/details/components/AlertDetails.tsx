@@ -19,7 +19,7 @@ export function AlertDetails({ alert, backTo }: AlertDetailsProps) {
   }, [alert.id])
 
   return (
-    <Stack spacing={3}>
+    <Stack spacing={{ xs: 2.5, md: 3 }}>
       <Link component={RouterLink} to={backTo}>
         Back to alerts
       </Link>
@@ -28,7 +28,13 @@ export function AlertDetails({ alert, backTo }: AlertDetailsProps) {
         <Typography color="text.secondary" variant="overline">
           Alert details
         </Typography>
-        <Typography component="h1" ref={headingRef} tabIndex={-1} variant="h3">
+        <Typography
+          component="h1"
+          ref={headingRef}
+          sx={{ overflowWrap: 'anywhere' }}
+          tabIndex={-1}
+          variant="h3"
+        >
           {alert.event}
         </Typography>
         <Typography color="text.secondary" component="p" variant="h6">
@@ -41,6 +47,7 @@ export function AlertDetails({ alert, backTo }: AlertDetailsProps) {
         aria-labelledby="alert-information-heading"
         component="section"
         sx={{ p: { xs: 2, sm: 3 } }}
+        variant="outlined"
       >
         <Typography id="alert-information-heading" sx={{ mb: 2 }} variant="h5">
           Alert information
@@ -50,7 +57,10 @@ export function AlertDetails({ alert, backTo }: AlertDetailsProps) {
           sx={{
             display: 'grid',
             gap: 2,
-            gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' },
+            gridTemplateColumns: {
+              xs: '1fr',
+              sm: 'repeat(2, minmax(0, 1fr))',
+            },
             m: 0,
           }}
         >
@@ -95,7 +105,12 @@ export function AlertDetails({ alert, backTo }: AlertDetailsProps) {
         headingId="alert-instructions-heading"
       />
 
-      <Link href={alert.sourceUrl} rel="noreferrer" target="_blank">
+      <Link
+        href={alert.sourceUrl}
+        rel="noreferrer"
+        sx={{ alignSelf: 'flex-start', overflowWrap: 'anywhere' }}
+        target="_blank"
+      >
         View source alert
       </Link>
     </Stack>
@@ -107,7 +122,7 @@ function DetailItem({
   children,
 }: Readonly<{ label: string; children: ReactNode }>) {
   return (
-    <Box component="div">
+    <Box component="div" sx={{ minWidth: 0, overflowWrap: 'anywhere' }}>
       <Typography color="text.secondary" component="dt" variant="body2">
         {label}
       </Typography>
@@ -140,11 +155,18 @@ function AlertTextSection({
       aria-labelledby={headingId}
       component="section"
       sx={{ p: { xs: 2, sm: 3 } }}
+      variant="outlined"
     >
       <Typography id={headingId} sx={{ mb: 1 }} variant="h5">
         {heading}
       </Typography>
-      <Typography sx={{ whiteSpace: 'pre-wrap' }}>
+      <Typography
+        sx={{
+          lineHeight: 1.7,
+          overflowWrap: 'anywhere',
+          whiteSpace: 'pre-wrap',
+        }}
+      >
         {content ?? 'Not provided by NWS'}
       </Typography>
     </Paper>

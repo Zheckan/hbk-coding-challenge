@@ -1,6 +1,8 @@
 import {
+  Box,
   Link,
   Paper,
+  SvgIcon,
   Table,
   TableBody,
   TableCell,
@@ -9,6 +11,7 @@ import {
   TablePagination,
   TableRow,
 } from '@mui/material'
+import { darken } from '@mui/material/styles'
 import { Link as RouterLink } from 'react-router-dom'
 
 import { AlertSeverityChip } from '@/features/alerts/common/components/AlertSeverityChip'
@@ -44,8 +47,34 @@ export function AlertsTable({
   onPageChange,
 }: AlertsTableProps) {
   return (
-    <TableContainer component={Paper}>
-      <Table aria-label="Weather alerts">
+    <TableContainer
+      aria-label="Weather alerts table"
+      component={Paper}
+      role="region"
+      sx={{
+        border: 1,
+        borderColor: 'divider',
+        borderRadius: 1,
+        maxWidth: '100%',
+        minWidth: 0,
+        overflowX: { xs: 'hidden', md: 'auto' },
+        width: '100%',
+      }}
+      tabIndex={0}
+    >
+      <Table
+        aria-label="Weather alerts"
+        size="small"
+        sx={{
+          minWidth: { xs: '100%', md: 1180 },
+          width: '100%',
+          '& .MuiTableCell-root': {
+            px: { xs: 1, sm: 2 },
+            py: 1.5,
+            verticalAlign: 'top',
+          },
+        }}
+      >
         <AlertsTableHead
           direction={direction}
           kind="sortable"
@@ -56,31 +85,112 @@ export function AlertsTable({
           {alerts.map((alert) => (
             <TableRow
               data-testid={testIds.alerts.list.row(alert.id)}
+              hover
               key={alert.id}
+              sx={(theme) => ({
+                bgcolor: 'background.paper',
+                '&.MuiTableRow-hover:hover': {
+                  bgcolor: darken(
+                    theme.palette.background.paper,
+                    theme.palette.action.hoverOpacity,
+                  ),
+                },
+              })}
             >
-              <TableCell>
+              <TableCell
+                sx={{
+                  textAlign: { xs: 'center', md: 'left' },
+                  width: { xs: 92, md: 108 },
+                }}
+              >
                 <AlertSeverityChip severity={alert.severity} />
               </TableCell>
-              <TableCell component="th" scope="row">
-                {alert.event}
+              <TableCell
+                component="th"
+                scope="row"
+                sx={{ minWidth: { md: 180 }, overflowWrap: 'anywhere' }}
+              >
+                <Box
+                  component="span"
+                  sx={{ display: 'block', fontWeight: 500 }}
+                >
+                  {alert.event}
+                </Box>
+                <Box
+                  component="span"
+                  sx={{
+                    color: 'text.secondary',
+                    display: { xs: '-webkit-box', md: 'none' },
+                    fontSize: '0.75rem',
+                    lineHeight: 1.35,
+                    mt: 0.5,
+                    overflow: 'hidden',
+                    WebkitBoxOrient: 'vertical',
+                    WebkitLineClamp: 2,
+                  }}
+                >
+                  {alert.affectedArea}
+                </Box>
               </TableCell>
-              <TableCell>{alert.headline ?? 'No headline provided'}</TableCell>
-              <TableCell>{alert.affectedArea}</TableCell>
-              <TableCell>
+              <TableCell
+                sx={{
+                  display: { xs: 'none', md: 'table-cell' },
+                  minWidth: 280,
+                }}
+              >
+                {alert.headline ?? 'No headline provided'}
+              </TableCell>
+              <TableCell
+                sx={{
+                  display: { xs: 'none', md: 'table-cell' },
+                  minWidth: 220,
+                }}
+              >
+                {alert.affectedArea}
+              </TableCell>
+              <TableCell
+                sx={{
+                  display: { xs: 'none', md: 'table-cell' },
+                  minWidth: 180,
+                }}
+              >
                 <AlertTime dateTime={alert.issuedAt} />
               </TableCell>
-              <TableCell>
+              <TableCell
+                sx={{
+                  display: { xs: 'none', md: 'table-cell' },
+                  minWidth: 180,
+                }}
+              >
                 <AlertTime dateTime={alert.expiresAt} />
               </TableCell>
-              <TableCell>
+              <TableCell
+                sx={{
+                  bgcolor: 'inherit',
+                  px: { xs: 0.25, md: 1 },
+                  position: { xs: 'static', md: 'sticky' },
+                  right: 0,
+                  textAlign: 'center',
+                  width: { xs: 48, md: 72 },
+                  zIndex: 1,
+                }}
+              >
                 <Link
                   aria-label={`View details for ${alert.event}`}
                   component={RouterLink}
+                  sx={{
+                    alignItems: 'center',
+                    borderRadius: 1,
+                    display: 'inline-flex',
+                    justifyContent: 'center',
+                    minHeight: 44,
+                    minWidth: 44,
+                  }}
                   to={`/alerts/${encodeURIComponent(alert.id)}${
                     listSearch === '' ? '' : `?${listSearch}`
                   }`}
                 >
-                  View details
+                  <DetailsArrowIcon />
                 </Link>
               </TableCell>
             </TableRow>
@@ -106,9 +216,13 @@ export function AlertsTable({
 }
 
 function AlertTime({ dateTime }: Readonly<{ dateTime: string }>) {
+  return <time dateTime={dateTime}>{formatAlertDate(dateTime)}</time>
+}
+
+function DetailsArrowIcon() {
   return (
-    <time dateTime={dateTime} style={{ whiteSpace: 'nowrap' }}>
-      {formatAlertDate(dateTime)}
-    </time>
+    <SvgIcon aria-hidden="true">
+      <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" />
+    </SvgIcon>
   )
 }

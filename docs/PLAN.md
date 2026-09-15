@@ -98,12 +98,12 @@ Add tests with each stage. Run `pnpm fix` before marking a stage complete.
 
 ### Stage 7: Responsive design and accessibility
 
-- [ ] Finish the MUI theme, page layout, spacing, typography, and visual hierarchy.
-- [ ] Keep the table usable on narrow screens and show the most important columns there.
-- [ ] Make filters usable on desktop and mobile without hiding their current values.
-- [ ] Support keyboard operation, visible focus, field labels, and announced result or error updates.
-- [ ] Expose table sort direction correctly and respect reduced-motion preferences.
-- [ ] Check color contrast and test the main flow at desktop and mobile widths.
+- [x] Finish the MUI theme, page layout, spacing, typography, and visual hierarchy.
+- [x] Keep the table usable on narrow screens and show the most important columns there.
+- [x] Make filters usable on desktop and mobile without hiding their current values.
+- [x] Support keyboard operation, visible focus, field labels, and announced result or error updates.
+- [x] Expose table sort direction correctly and respect reduced-motion preferences.
+- [x] Check color contrast and test the main flow at desktop and mobile widths.
 
 **Complete when:** the main flow works with keyboard input and at narrow and wide viewport sizes without losing information or actions.
 

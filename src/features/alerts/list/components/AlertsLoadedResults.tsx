@@ -52,7 +52,7 @@ export function AlertsLoadedResults({
 
 function EmptyAlertsResults({ state }: Readonly<{ state: EmptyAlertsState }>) {
   return (
-    <Stack spacing={1}>
+    <Stack spacing={1} sx={{ minWidth: 0 }}>
       <MuiAlert aria-label="No weather alerts" role="status" severity="info">
         No matching alerts in the loaded results.
       </MuiAlert>
@@ -78,7 +78,7 @@ function ReadyAlertsResults({
   onPageChange,
 }: ReadyAlertsResultsProps) {
   return (
-    <Stack spacing={1}>
+    <Stack spacing={1} sx={{ minWidth: 0 }}>
       {state.isUpdating ? (
         <LinearProgress aria-label="Updating weather alerts" role="status" />
       ) : null}
@@ -115,15 +115,22 @@ function LoadedAlertCount({
 }: LoadedAlertCountProps) {
   return (
     <Typography
+      aria-atomic="true"
       aria-label="Loaded alert count"
+      aria-live="polite"
       color="text.secondary"
       role="status"
       variant="body2"
     >
-      {loadedCount} alerts loaded. Showing {matchingCount} matching alerts.
+      {formatAlertCount(loadedCount)} loaded. Showing {matchingCount} matching{' '}
+      {matchingCount === 1 ? 'alert' : 'alerts'}.
       {hasMore ? ' More alerts are available from NWS.' : ''}
     </Typography>
   )
+}
+
+function formatAlertCount(count: number): string {
+  return `${String(count)} ${count === 1 ? 'alert' : 'alerts'}`
 }
 
 function LoadMoreAction({ state }: Readonly<{ state: AlertsLoadedState }>) {
@@ -151,7 +158,10 @@ function LoadMoreAction({ state }: Readonly<{ state: AlertsLoadedState }>) {
     <Button
       disabled={state.isLoadingMore || state.isLoadMoreDisabled}
       onClick={state.onLoadMore}
-      sx={{ alignSelf: 'center' }}
+      sx={{
+        alignSelf: 'center',
+        width: { xs: '100%', sm: 'auto' },
+      }}
       variant="outlined"
     >
       {state.isLoadingMore ? 'Loading more alerts…' : 'Load more alerts'}

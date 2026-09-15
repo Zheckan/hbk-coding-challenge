@@ -124,7 +124,7 @@ describe('alerts list', () => {
     expect(await screen.findByText('Coastal Flood Warning')).toBeVisible()
     expect(
       screen.getByRole('status', { name: 'Loaded alert count' }),
-    ).toHaveTextContent('3 alerts loaded. Showing 1 matching alerts.')
+    ).toHaveTextContent('3 alerts loaded. Showing 1 matching alert.')
   })
 
   it('explains rate limiting, retries once, and lets the user try again', async () => {
@@ -229,13 +229,21 @@ describe('alerts list', () => {
     )
 
     expect(within(alertRow).getByText('Severe')).toBeVisible()
-    expect(within(alertRow).getByText('Flash Flood Warning')).toBeVisible()
+    expect(
+      within(alertRow).getByRole('rowheader', {
+        name: /Flash Flood Warning/,
+      }),
+    ).toBeVisible()
     expect(
       within(alertRow).getByText(
         'Flash Flood Warning issued September 14 at 8:29AM CDT',
       ),
     ).toBeVisible()
-    expect(within(alertRow).getByText('Daviess, MO; DeKalb, MO')).toBeVisible()
+    expect(
+      within(alertRow).getByRole('cell', {
+        name: 'Daviess, MO; DeKalb, MO',
+      }),
+    ).toBeVisible()
     expect(
       within(alertRow).getByText('Sep 14, 2026, 8:29 AM CDT'),
     ).toBeVisible()
@@ -247,6 +255,25 @@ describe('alerts list', () => {
         name: 'View details for Flash Flood Warning',
       }),
     ).toHaveAttribute('href', '/alerts/urn%3Aoid%3Atest.complete')
+  })
+
+  it('lets keyboard users skip the filters and move to the results', async () => {
+    const user = userEvent.setup()
+
+    renderApp({ initialEntries: ['/alerts'] })
+
+    await user.tab()
+
+    const skipLink = screen.getByRole('link', {
+      name: 'Skip to alert results',
+    })
+    expect(skipLink).toHaveFocus()
+
+    await user.keyboard('{Enter}')
+
+    expect(
+      await screen.findByRole('region', { name: 'Alert results' }),
+    ).toHaveFocus()
   })
 
   it('offers NWS land and marine area codes', async () => {
@@ -320,13 +347,13 @@ describe('alerts list', () => {
 
     const table = await screen.findByRole('table', { name: 'Weather alerts' })
     expect(
-      within(table).getByText('Flash Flood Warning', {
-        selector: 'th',
+      within(table).getByRole('rowheader', {
+        name: /Flash Flood Warning/,
       }),
     ).toBeVisible()
     expect(
-      within(table).queryByText('Special Weather Statement', {
-        selector: 'th',
+      within(table).queryByRole('rowheader', {
+        name: /Special Weather Statement/,
       }),
     ).not.toBeInTheDocument()
   })
@@ -350,6 +377,10 @@ describe('alerts list', () => {
     )
 
     const table = await screen.findByRole('table', { name: 'Weather alerts' })
+    expect(
+      within(table).getByRole('columnheader', { name: 'Issued' }),
+    ).toHaveAttribute('aria-sort', 'descending')
+
     await user.click(
       within(table).getByRole('button', { name: 'Sort by severity' }),
     )
@@ -359,6 +390,12 @@ describe('alerts list', () => {
         '?area=KS&severity=moderate&q=lake&sort=severity&direction=asc',
       )
     })
+    expect(
+      within(table).getByRole('columnheader', { name: 'Severity' }),
+    ).toHaveAttribute('aria-sort', 'ascending')
+    expect(
+      within(table).getByRole('columnheader', { name: 'Issued' }),
+    ).not.toHaveAttribute('aria-sort')
   })
 
   it('clears filters without resetting the selected sort', async () => {
