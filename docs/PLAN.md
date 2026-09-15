@@ -6,15 +6,15 @@ Docs: https://www.weather.gov/documentation/services-web-api
 
 ## Core requirements
 
-- Build the application with React and TypeScript.
-- Load weather alerts from the National Weather Service API.
-- Show the alerts in a table.
-- Let users sort and filter the table.
-- Let users select an alert and read its details.
-- Let users select a date range.
-- Display dates in the user's local time zone.
-- Use consistent styling and clear navigation.
-- Document the project and keep the code maintainable.
+- [x] Build the application with React and TypeScript.
+- [x] Load weather alerts from the National Weather Service API.
+- [x] Show the alerts in a table.
+- [x] Let users sort and filter the table.
+- [x] Let users select an alert and read its details.
+- [x] Let users select a date range.
+- [x] Display dates in the user's local time zone.
+- [x] Use consistent styling and clear navigation.
+- [x] Document the project and keep the code maintainable.
 
 ## Implementation approach
 
@@ -109,12 +109,12 @@ Add tests with each stage. Run `pnpm fix` before marking a stage complete.
 
 ### Stage 8: Final testing, documentation, and delivery
 
-- [ ] Add a Playwright test for loading alerts, filtering, sorting, opening details, and returning to the list.
-- [ ] Run a manual smoke test against the live NWS API and a production preview.
-- [ ] Write the README with setup, commands, architecture, API limits, and important decisions.
-- [ ] Update the AI usage note so it matches the work that was actually done.
-- [ ] Check every core requirement and mark completed plan items.
-- [ ] Run the full verification commands and review the final diff for secrets, generated files, and unrelated changes.
-- [ ] Test the documented setup from a clean installation.
+- [x] Add Playwright tests for loading alerts, filtering, sorting, opening details, and returning to the list.
+- [x] Run a manual smoke test against the live NWS API and a production preview.
+- [x] Write the README with setup, commands, architecture, API limits, and important decisions.
+- [x] Update the AI usage note so it matches the work that was actually done.
+- [x] Check every core requirement and mark completed plan items.
+- [x] Run the full verification commands and review the final diff for secrets, generated files, and unrelated changes.
+- [x] Test the documented setup from a clean installation.
 
 **Complete when:** all automated checks pass, the live smoke test passes, the documentation matches the project, and the repository is ready to submit.
