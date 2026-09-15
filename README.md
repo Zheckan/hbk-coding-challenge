@@ -98,4 +98,5 @@ for the upstream contract.
   states, while focused Playwright flows share one Page Object.
 
 The implementation plan and progress are in [docs/PLAN.md](docs/PLAN.md). The
-domain language is in [docs/CONTEXT.md](docs/CONTEXT.md).
+domain language is in [docs/CONTEXT.md](docs/CONTEXT.md). Where and how AI was
+used is in [ai-note.md](ai-note.md).

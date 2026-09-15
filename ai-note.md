@@ -1,18 +1,21 @@
 # AI Notes
 
-This document tracks where and how I used AI in this submission. These are general notes, during an interview I can share my AI chat history and explain my process in more detail (if needed).
+This document tracks where and how I used AI in this submission. During an interview I can share my AI chat history and explain my process in more detail.
 
 ## General Notes
 
-Since pair programming is practiced at your company, I wanted to simulate that dynamic. At the start of the project, where there is a lot of manual, repetitive work and porting patterns/habits from previous projects, I used AI to help speed things up. Later on, the plan was for me to do the implementation while the AI acted as a reviewer.
+The email permitted AI use and asked for disclosure, so these notes describe how I actually worked. I kept ownership of architecture, structure, and review, and used AI to generate code against the rules I had already written down, since that was faster than typing it all myself. Since company is practices pair programming, my plan was to simulate pair programming: AI as driver at first, then AI as generator and reviewer over its own output. In practice I stayed the reviewer for both, it was much quicker since project is in early stages and requires a lot of iteration/boilerplate, and it worked well, so I kept this flow.
 
 ## Project Setup
 
-As mentioned, I began by bringing over some helpful configurations I usually use in my projects—for example, a `pnpm fix` command that runs all checks and formatting at once. I also provided notes and instructions for the AI regarding the project structure so it could follow them or verify that the rules were being used correctly. Additionally, I used AI to generate boilerplate code for features, containers, views, and components, as well as several tests.
+I brought over some helpful configurations I use in my own projects, for example a `pnpm fix` command that runs all checks and formatting at once. I also wrote the notes and instructions for the AI in [project-structure.md](docs/project-structure.md) so it could follow them or verify that the rules were being used correctly. I used AI to generate boilerplate code for features, containers, views, and components, as well as several tests.
 
 ## Dev Process
 
-Starting from scratch (writing this after Stage 2), I used AI to write about 80% of the code. I tell it what to do, and it executes it. However, I have had to push back on its structural choices, even though I provided a clear example in [project-structure.md](docs/project-structure.md). Because the project is small, the model struggles to infer the overall architecture from existing files and often invents new patterns instead. Moving forward, I need to be even more cautious, as the AI can easily drift off course, requiring me to restrict its scope.
+I used AI to generate roughly 80% of the code and reviewed all of it. I decide what to build, AI produces a draft, and the source of truth is the review, not the draft. Concretely, that meant:
 
-Record after stage 5:
-I'm still using AI to generate about 80% of the code (even though I wanted to switch roles and simulate 'pair programming'). I wanted to include best practices and patterns from my previous projects into this one. Most of them are unnecessary for the scale of this project, but I wanted to show that I can build a codebase from scratch that won't break in the context of a larger project. Unfortunately, this requires writing a lot of boilerplate code (e.g. the page -> container -> "master hook" -> view layering for every screen, a typed URL-state parser/serializer, a typed API error layer, and a typed test-ID factory) and creating numerous files, and AI is simply faster at that than I am. So, I decided that a better workflow for this task would be to use AI to generate the code, conduct a careful review, and fix the 20% of weirdness that it sometimes produces.
+- Pushing back on structural choices the model invented because the project was too small for it to infer the architecture from existing files. I held it to [project-structure.md](docs/project-structure.md) and restricted its scope when it drifted.
+- Injecting patterns I wanted from my previous projects. Most are unnecessary at this scale, but I wanted to show that I can build a codebase that holds up in a larger project. That requires boilerplate (the page -> container -> "master hook" -> view layering on every screen, a typed URL-state parser/serializer, a typed API error layer, and a typed test-ID factory), and AI is faster at that than I am.
+- Reviewing every file, running the checks with `pnpm fix`, and fixing the 20% of weirdness the drafts tended to contain.
+
+Confirmed after stage 5: the generate, review, and fix loop was the better workflow for this task.
