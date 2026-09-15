@@ -1,12 +1,7 @@
-import {
-  Alert as MuiAlert,
-  Button,
-  LinearProgress,
-  Stack,
-  Typography,
-} from '@mui/material'
+import { Alert as MuiAlert, Button, LinearProgress, Stack } from '@mui/material'
 
 import type {
+  AlertsPageSize,
   AlertsSortDirection,
   AlertsSortKey,
 } from '../logic/alerts-list-state'
@@ -24,6 +19,7 @@ type AlertsLoadedResultsProps = Readonly<{
   direction: AlertsSortDirection
   onSort: (sort: AlertsSortKey) => void
   onPageChange: (page: number) => void
+  onPageSizeChange: (pageSize: AlertsPageSize) => void
 }>
 
 export function AlertsLoadedResults({
@@ -33,6 +29,7 @@ export function AlertsLoadedResults({
   direction,
   onSort,
   onPageChange,
+  onPageSizeChange,
 }: AlertsLoadedResultsProps) {
   if (state.kind === 'empty') {
     return <EmptyAlertsResults state={state} />
@@ -43,6 +40,7 @@ export function AlertsLoadedResults({
       direction={direction}
       listSearch={listSearch}
       onPageChange={onPageChange}
+      onPageSizeChange={onPageSizeChange}
       onSort={onSort}
       sort={sort}
       state={state}
@@ -56,11 +54,6 @@ function EmptyAlertsResults({ state }: Readonly<{ state: EmptyAlertsState }>) {
       <MuiAlert aria-label="No weather alerts" role="status" severity="info">
         No matching alerts in the loaded results.
       </MuiAlert>
-      <LoadedAlertCount
-        hasMore={state.hasMore}
-        loadedCount={state.loadedCount}
-        matchingCount={0}
-      />
       <LoadMoreAction state={state} />
     </Stack>
   )
@@ -76,24 +69,23 @@ function ReadyAlertsResults({
   direction,
   onSort,
   onPageChange,
+  onPageSizeChange,
 }: ReadyAlertsResultsProps) {
   return (
     <Stack spacing={1} sx={{ minWidth: 0 }}>
       {state.isUpdating ? (
         <LinearProgress aria-label="Updating weather alerts" role="status" />
       ) : null}
-      <LoadedAlertCount
-        hasMore={state.hasMore}
-        loadedCount={state.loadedCount}
-        matchingCount={state.total}
-      />
       <AlertsTable
         alerts={state.alerts}
         direction={direction}
         listSearch={listSearch}
         onPageChange={onPageChange}
+        onPageSizeChange={onPageSizeChange}
         onSort={onSort}
         page={state.page}
+        pageCount={state.pageCount}
+        pageSize={state.pageSize}
         sort={sort}
         total={state.total}
       />
@@ -102,38 +94,11 @@ function ReadyAlertsResults({
   )
 }
 
-type LoadedAlertCountProps = Readonly<{
-  loadedCount: number
-  matchingCount: number
-  hasMore: boolean
-}>
-
-function LoadedAlertCount({
-  loadedCount,
-  matchingCount,
-  hasMore,
-}: LoadedAlertCountProps) {
-  return (
-    <Typography
-      aria-atomic="true"
-      aria-label="Loaded alert count"
-      aria-live="polite"
-      color="text.secondary"
-      role="status"
-      variant="body2"
-    >
-      {formatAlertCount(loadedCount)} loaded. Showing {matchingCount} matching{' '}
-      {matchingCount === 1 ? 'alert' : 'alerts'}.
-      {hasMore ? ' More alerts are available from NWS.' : ''}
-    </Typography>
-  )
-}
-
-function formatAlertCount(count: number): string {
-  return `${String(count)} ${count === 1 ? 'alert' : 'alerts'}`
-}
-
 function LoadMoreAction({ state }: Readonly<{ state: AlertsLoadedState }>) {
+  if (state.kind === 'ready' && state.page !== state.pageCount) {
+    return null
+  }
+
   if (state.loadMoreFailed) {
     return (
       <MuiAlert

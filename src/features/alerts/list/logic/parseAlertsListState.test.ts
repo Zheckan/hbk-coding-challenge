@@ -21,6 +21,7 @@ describe('alerts list URL state', () => {
         sort: 'severity',
         direction: 'asc',
         page: '2',
+        pageSize: '50',
       }),
       new Date(2026, 8, 14, 12),
     )
@@ -37,6 +38,7 @@ describe('alerts list URL state', () => {
         sort: 'severity',
         direction: 'asc',
         page: 2,
+        pageSize: 50,
       },
       dateBounds: {
         min: '2026-09-08',

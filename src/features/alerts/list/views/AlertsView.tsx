@@ -16,6 +16,7 @@ export function AlertsView({
   onClearFilters,
   onSort,
   onPageChange,
+  onPageSizeChange,
 }: UseAlertsResult) {
   const resultsRef = useRef<HTMLElement>(null)
 
@@ -85,6 +86,7 @@ export function AlertsView({
           direction={direction}
           listSearch={listSearch}
           onPageChange={onPageChange}
+          onPageSizeChange={onPageSizeChange}
           onSort={onSort}
           sort={sort}
           state={state}

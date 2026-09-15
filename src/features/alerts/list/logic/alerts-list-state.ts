@@ -4,7 +4,13 @@ import type {
 } from '@/features/alerts/common/model/alert'
 import type { AlertQuery } from '@/features/alerts/common/model/AlertQuery'
 
-export const ALERTS_PAGE_SIZE = 25
+export const ALERTS_PAGE_SIZES = [10, 25, 50, 100] as const
+export type AlertsPageSize = (typeof ALERTS_PAGE_SIZES)[number]
+export const DEFAULT_ALERTS_PAGE_SIZE: AlertsPageSize = 25
+
+export function isAlertsPageSize(value: number): value is AlertsPageSize {
+  return ALERTS_PAGE_SIZES.some((pageSize) => pageSize === value)
+}
 
 export const ALERTS_SORT_KEYS = [
   'severity',
@@ -27,6 +33,7 @@ export type AlertsListState = Readonly<{
   sort: AlertsSortKey
   direction: AlertsSortDirection
   page: number
+  pageSize: AlertsPageSize
 }>
 
 export type AlertsListFilters = Pick<

@@ -22,6 +22,7 @@ const defaultState = {
   sort: 'issuedAt',
   direction: 'desc',
   page: 1,
+  pageSize: 25,
 } satisfies AlertsListState
 
 describe('alerts list rows', () => {
@@ -74,7 +75,7 @@ describe('alerts list rows', () => {
     ])
   })
 
-  it('returns 25 alerts per page', () => {
+  it('uses the selected number of rows per page', () => {
     const manyAlerts = Array.from({ length: 26 }, (_, index) => ({
       ...firstAlert,
       id: `alert-${String(index + 1).padStart(2, '0')}`,
@@ -85,10 +86,18 @@ describe('alerts list rows', () => {
       ...defaultState,
       sort: 'event',
       direction: 'asc',
-      page: 2,
+      page: 3,
+      pageSize: 10,
     })
 
-    expect(result.rows.map((alert) => alert.id)).toEqual(['alert-26'])
-    expect(result).toMatchObject({ total: 26, page: 2, pageCount: 2 })
+    expect(result.rows.map((alert) => alert.id)).toEqual([
+      'alert-21',
+      'alert-22',
+      'alert-23',
+      'alert-24',
+      'alert-25',
+      'alert-26',
+    ])
+    expect(result).toMatchObject({ total: 26, page: 3, pageCount: 3 })
   })
 })

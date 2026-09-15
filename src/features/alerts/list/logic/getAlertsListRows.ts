@@ -2,11 +2,7 @@ import {
   type Alert,
   type AlertSeverity,
 } from '@/features/alerts/common/model/alert'
-import {
-  ALERTS_PAGE_SIZE,
-  type AlertsListState,
-  type AlertsSortKey,
-} from './alerts-list-state'
+import { type AlertsListState, type AlertsSortKey } from './alerts-list-state'
 
 type AlertsListRows = Readonly<{
   rows: readonly Alert[]
@@ -41,16 +37,13 @@ export function getAlertsListRows(
     const comparison = compareAlerts(left, right, state.sort)
     return state.direction === 'asc' ? comparison : -comparison
   })
-  const pageCount = Math.max(
-    1,
-    Math.ceil(sortedAlerts.length / ALERTS_PAGE_SIZE),
-  )
+  const pageCount = Math.max(1, Math.ceil(sortedAlerts.length / state.pageSize))
 
   const page = Math.min(state.page, pageCount)
-  const startIndex = (page - 1) * ALERTS_PAGE_SIZE
+  const startIndex = (page - 1) * state.pageSize
 
   return {
-    rows: sortedAlerts.slice(startIndex, startIndex + ALERTS_PAGE_SIZE),
+    rows: sortedAlerts.slice(startIndex, startIndex + state.pageSize),
     total: sortedAlerts.length,
     page,
     pageCount,

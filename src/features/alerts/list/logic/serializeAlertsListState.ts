@@ -1,5 +1,6 @@
 import {
   type AlertsListState,
+  DEFAULT_ALERTS_PAGE_SIZE,
   DEFAULT_ALERTS_SORT,
   DEFAULT_ALERTS_SORT_DIRECTION,
 } from './alerts-list-state'
@@ -22,6 +23,10 @@ export function serializeAlertsListState(
 
   if (state.direction !== DEFAULT_ALERTS_SORT_DIRECTION) {
     searchParams.set('direction', state.direction)
+  }
+
+  if (state.pageSize !== DEFAULT_ALERTS_PAGE_SIZE) {
+    searchParams.set('pageSize', String(state.pageSize))
   }
 
   if (state.page > 1) {

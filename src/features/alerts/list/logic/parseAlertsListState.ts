@@ -7,8 +7,10 @@ import {
   ALERTS_SORT_KEYS,
   type AlertsDateBounds,
   type AlertsListState,
+  DEFAULT_ALERTS_PAGE_SIZE,
   DEFAULT_ALERTS_SORT,
   DEFAULT_ALERTS_SORT_DIRECTION,
+  isAlertsPageSize,
   type ParsedAlertsListState,
 } from './alerts-list-state'
 
@@ -76,6 +78,7 @@ function parseState(searchParams: URLSearchParams): AlertsListState {
   const sortParameter = searchParams.get('sort')
   const directionParameter = searchParams.get('direction')
   const pageParameter = Number(searchParams.get('page'))
+  const pageSizeParameter = Number(searchParams.get('pageSize'))
 
   return {
     issuedFrom: searchParams.get('from') ?? '',
@@ -99,6 +102,9 @@ function parseState(searchParams: URLSearchParams): AlertsListState {
       Number.isSafeInteger(pageParameter) && pageParameter > 0
         ? pageParameter
         : 1,
+    pageSize: isAlertsPageSize(pageSizeParameter)
+      ? pageSizeParameter
+      : DEFAULT_ALERTS_PAGE_SIZE,
   }
 }
 

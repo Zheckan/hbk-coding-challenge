@@ -123,8 +123,8 @@ describe('alerts list', () => {
 
     expect(await screen.findByText('Coastal Flood Warning')).toBeVisible()
     expect(
-      screen.getByRole('status', { name: 'Loaded alert count' }),
-    ).toHaveTextContent('3 alerts loaded. Showing 1 matching alert.')
+      screen.queryByRole('status', { name: 'Loaded alert count' }),
+    ).not.toBeInTheDocument()
   })
 
   it('explains rate limiting, retries once, and lets the user try again', async () => {
@@ -498,9 +498,73 @@ describe('alerts list', () => {
     expect(await within(table).findByText('Alert 01')).toBeVisible()
   })
 
+  it('changes rows per page and opens a page by number', async () => {
+    const user = userEvent.setup()
+    const pagedFixture = {
+      ...listFixture,
+      features: Array.from({ length: 26 }, (_, index) => {
+        const number = String(index + 1).padStart(2, '0')
+
+        return {
+          ...completeFeature,
+          id: `https://api.weather.gov/alerts/alert-${number}`,
+          properties: {
+            ...completeFeature.properties,
+            id: `alert-${number}`,
+            event: `Alert ${number}`,
+          },
+        }
+      }),
+    }
+
+    server.use(
+      http.get('https://api.weather.gov/alerts', () =>
+        HttpResponse.json(pagedFixture),
+      ),
+    )
+
+    const { router } = renderApp({ initialEntries: ['/alerts'] })
+    const table = await screen.findByRole('table', { name: 'Weather alerts' })
+
+    await user.selectOptions(
+      within(table).getByRole('combobox', { name: 'Rows per page' }),
+      '10',
+    )
+
+    await waitFor(() => {
+      expect(router.state.location.search).toBe('?pageSize=10')
+    })
+    expect(await within(table).findByText('Alert 10')).toBeVisible()
+    expect(within(table).queryByText('Alert 11')).not.toBeInTheDocument()
+
+    const pageInput = within(table).getByRole('spinbutton', { name: 'Page' })
+    await user.clear(pageInput)
+    await user.type(pageInput, '3{Enter}')
+
+    await waitFor(() => {
+      expect(router.state.location.search).toBe('?pageSize=10&page=3')
+    })
+    expect(await within(table).findByText('Alert 21')).toBeVisible()
+    expect(within(table).getByText('Alert 26')).toBeVisible()
+    expect(within(table).queryByText('Alert 20')).not.toBeInTheDocument()
+  })
+
   it('loads the next NWS page and reports only the alerts already loaded', async () => {
     const user = userEvent.setup()
     let requestedCursor: string | null = null
+    const firstPageFeatures = Array.from({ length: 26 }, (_, index) => {
+      const number = String(index + 1).padStart(2, '0')
+
+      return {
+        ...completeFeature,
+        id: `https://api.weather.gov/alerts/alert-${number}`,
+        properties: {
+          ...completeFeature.properties,
+          id: `alert-${number}`,
+          event: `Alert ${number}`,
+        },
+      }
+    })
     const nextPageFeature = {
       ...completeFeature,
       id: 'https://api.weather.gov/alerts/next-page-alert',
@@ -523,23 +587,26 @@ describe('alerts list', () => {
           })
         }
 
-        return HttpResponse.json(listFixture)
+        return HttpResponse.json({
+          ...listFixture,
+          features: firstPageFeatures,
+        })
       }),
     )
 
     renderApp({ initialEntries: ['/alerts'] })
 
+    expect(await screen.findByText('Alert 01')).toBeVisible()
     expect(
-      await screen.findByRole('status', { name: 'Loaded alert count' }),
-    ).toHaveTextContent(
-      '2 alerts loaded. Showing 2 matching alerts. More alerts are available from NWS.',
-    )
+      screen.queryByRole('button', { name: 'Load more alerts' }),
+    ).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Go to next page' }))
+
+    expect(await screen.findByText('Alert 26')).toBeVisible()
 
     await user.click(screen.getByRole('button', { name: 'Load more alerts' }))
 
-    expect(
-      await screen.findByRole('status', { name: 'Loaded alert count' }),
-    ).toHaveTextContent('3 alerts loaded. Showing 3 matching alerts.')
     expect(requestedCursor).toBe('next-page-token')
     expect(screen.getByText('Coastal Flood Warning')).toBeVisible()
     expect(

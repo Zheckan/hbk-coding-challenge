@@ -16,6 +16,7 @@ import type {
   AlertsDateBounds,
   AlertsListFilters,
   AlertsListState,
+  AlertsPageSize,
   AlertsSortDirection,
   AlertsSortKey,
 } from './alerts-list-state'
@@ -29,7 +30,6 @@ export type AlertsViewState =
   | Readonly<
       {
         kind: 'empty'
-        loadedCount: number
       } & AlertsPaginationState
     >
   | Readonly<{ kind: 'rate-limit'; onRetry: () => void }>
@@ -43,7 +43,8 @@ export type AlertsViewState =
         alerts: readonly Alert[]
         total: number
         page: number
-        loadedCount: number
+        pageCount: number
+        pageSize: AlertsPageSize
         isUpdating: boolean
       } & AlertsPaginationState
     >
@@ -67,6 +68,7 @@ export type UseAlertsResult = Readonly<{
   onClearFilters: () => void
   onSort: (sort: AlertsSortKey) => void
   onPageChange: (page: number) => void
+  onPageSizeChange: (pageSize: AlertsPageSize) => void
 }>
 
 export function useAlerts(): UseAlertsResult {
@@ -156,7 +158,6 @@ export function useAlerts(): UseAlertsResult {
       listRows.total === 0
         ? {
             kind: 'empty',
-            loadedCount: loadedAlerts.length,
             ...paginationState,
           }
         : {
@@ -164,7 +165,8 @@ export function useAlerts(): UseAlertsResult {
             alerts: listRows.rows,
             total: listRows.total,
             page: listRows.page,
-            loadedCount: loadedAlerts.length,
+            pageCount: listRows.pageCount,
+            pageSize: listState.pageSize,
             isUpdating:
               alertsQuery.isFetching && !alertsQuery.isFetchingNextPage,
             ...paginationState,
@@ -192,6 +194,9 @@ export function useAlerts(): UseAlertsResult {
     onSort: handleSort,
     onPageChange: (page) => {
       updateUrl({ ...listState, page })
+    },
+    onPageSizeChange: (pageSize) => {
+      updateUrl({ ...listState, page: 1, pageSize })
     },
   }
 }

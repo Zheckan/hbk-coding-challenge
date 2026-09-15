@@ -67,7 +67,7 @@ Add tests with each stage. Run `pnpm fix` before marking a stage complete.
 - [x] Convert local calendar dates into the API's ISO date-time values and enforce its available date window.
 - [x] Send supported filters to the API and apply text search to the loaded alerts.
 - [x] Add severity, event, area, issued-time, and expiry-time sorting.
-- [x] Add 25-row table pages and preserve filters and sorting during navigation and reloads.
+- [x] Add configurable table pages with direct page navigation, and preserve the list state during navigation and reloads.
 - [x] Test valid and invalid ranges, URL updates, API queries, searching, sorting, and restored state.
 
 **Complete when:** users can change every filter and sort option, copy the URL, and reopen the same table state.
@@ -91,7 +91,7 @@ Add tests with each stage. Run `pnpm fix` before marking a stage complete.
 - [x] Add clear empty, invalid-range, request-error, rate-limit, and not-found states.
 - [x] Add retry actions; retry network, rate-limit, and server failures once, but do not retry other client errors.
 - [x] Follow the NWS pagination cursor with a Load more action.
-- [x] Show how many alerts are loaded without implying that unseen results were sorted or searched.
+- [x] Show the current result total in table pagination and expose additional NWS results through the Load more action.
 - [x] Test every state and the multi-page loading flow with MSW.
 
 **Complete when:** every request outcome has a deterministic test and the user always has a clear next action.

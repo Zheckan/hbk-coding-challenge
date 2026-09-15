@@ -1,4 +1,5 @@
 import type {
+  AlertsPageSize,
   AlertsSortDirection,
   AlertsSortKey,
 } from '../logic/alerts-list-state'
@@ -14,6 +15,7 @@ type AlertsResultsProps = Readonly<{
   direction: AlertsSortDirection
   onSort: (sort: AlertsSortKey) => void
   onPageChange: (page: number) => void
+  onPageSizeChange: (pageSize: AlertsPageSize) => void
 }>
 
 export function AlertsResults({
@@ -23,6 +25,7 @@ export function AlertsResults({
   direction,
   onSort,
   onPageChange,
+  onPageSizeChange,
 }: AlertsResultsProps) {
   switch (state.kind) {
     case 'loading':
@@ -38,6 +41,7 @@ export function AlertsResults({
           direction={direction}
           listSearch={listSearch}
           onPageChange={onPageChange}
+          onPageSizeChange={onPageSizeChange}
           onSort={onSort}
           sort={sort}
           state={state}

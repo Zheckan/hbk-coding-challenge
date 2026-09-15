@@ -7,8 +7,6 @@ import {
   TableBody,
   TableCell,
   TableContainer,
-  TableFooter,
-  TablePagination,
   TableRow,
 } from '@mui/material'
 import { darken } from '@mui/material/styles'
@@ -19,10 +17,11 @@ import { formatAlertDate } from '@/features/alerts/common/logic/formatAlertDate'
 import { type Alert } from '@/features/alerts/common/model/alert'
 import { testIds } from '@/ui/utils/testIds'
 import {
-  ALERTS_PAGE_SIZE,
+  type AlertsPageSize,
   type AlertsSortDirection,
   type AlertsSortKey,
 } from '../logic/alerts-list-state'
+import { AlertsPagination } from './AlertsPagination'
 import { AlertsTableHead } from './AlertsTableHead'
 
 type AlertsTableProps = Readonly<{
@@ -30,10 +29,13 @@ type AlertsTableProps = Readonly<{
   listSearch: string
   total: number
   page: number
+  pageCount: number
+  pageSize: AlertsPageSize
   sort: AlertsSortKey
   direction: AlertsSortDirection
   onSort: (sort: AlertsSortKey) => void
   onPageChange: (page: number) => void
+  onPageSizeChange: (pageSize: AlertsPageSize) => void
 }>
 
 export function AlertsTable({
@@ -41,10 +43,13 @@ export function AlertsTable({
   listSearch,
   total,
   page,
+  pageCount,
+  pageSize,
   sort,
   direction,
   onSort,
   onPageChange,
+  onPageSizeChange,
 }: AlertsTableProps) {
   return (
     <TableContainer
@@ -198,20 +203,14 @@ export function AlertsTable({
             </TableRow>
           ))}
         </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TablePagination
-              colSpan={7}
-              count={total}
-              onPageChange={(_event, nextPage) => {
-                onPageChange(nextPage + 1)
-              }}
-              page={page - 1}
-              rowsPerPage={ALERTS_PAGE_SIZE}
-              rowsPerPageOptions={[ALERTS_PAGE_SIZE]}
-            />
-          </TableRow>
-        </TableFooter>
+        <AlertsPagination
+          onPageChange={onPageChange}
+          onPageSizeChange={onPageSizeChange}
+          page={page}
+          pageCount={pageCount}
+          pageSize={pageSize}
+          total={total}
+        />
       </Table>
     </TableContainer>
   )

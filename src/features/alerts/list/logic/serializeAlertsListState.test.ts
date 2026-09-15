@@ -15,10 +15,11 @@ describe('serializeAlertsListState', () => {
       sort: 'severity',
       direction: 'asc',
       page: 2,
+      pageSize: 50,
     } satisfies AlertsListState
 
     expect(serializeAlertsListState(state).toString()).toBe(
-      'from=2026-09-10&to=2026-09-14&area=KS&severity=severe&status=actual&q=flood&sort=severity&direction=asc&page=2',
+      'from=2026-09-10&to=2026-09-14&area=KS&severity=severe&status=actual&q=flood&sort=severity&direction=asc&pageSize=50&page=2',
     )
   })
 })
