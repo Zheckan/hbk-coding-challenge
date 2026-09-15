@@ -1,5 +1,6 @@
 import {
   Chip,
+  type ChipProps,
   Link,
   Paper,
   Table,
@@ -9,20 +10,20 @@ import {
   TableFooter,
   TablePagination,
   TableRow,
-  type ChipProps,
 } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
+
 import {
   type Alert,
   type AlertSeverity,
 } from "@/features/alerts/common/model/alert";
 import { testIds } from "@/ui/utils/testIds";
-import { formatAlertDate } from "../logic/format-alert-date";
 import {
   ALERTS_PAGE_SIZE,
   type AlertsSortDirection,
   type AlertsSortKey,
 } from "../logic/alerts-list-state";
+import { formatAlertDate } from "../logic/format-alert-date";
 import { AlertsTableHead } from "./AlertsTableHead";
 
 type AlertsTableProps = Readonly<{

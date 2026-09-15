@@ -1,6 +1,7 @@
 import { CssBaseline, ThemeProvider } from "@mui/material";
-import { QueryClientProvider, type QueryClient } from "@tanstack/react-query";
+import { type QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { PropsWithChildren } from "react";
+
 import { theme } from "@/ui/theme";
 
 type AppProvidersProps = PropsWithChildren<

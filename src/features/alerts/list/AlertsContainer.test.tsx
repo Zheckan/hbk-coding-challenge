@@ -1,10 +1,11 @@
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { delay, HttpResponse, http } from "msw";
+import { delay, http, HttpResponse } from "msw";
 import { afterEach, describe, expect, it, vi } from "vitest";
+
+import listFixture from "@/test/fixtures/nws-alert-list.json";
 import { renderApp } from "@/test/render-app";
 import { server } from "@/test/server";
-import listFixture from "@/test/fixtures/nws-alert-list.json";
 import { testIds } from "@/ui/utils/testIds";
 
 const completeFeature = listFixture.features[0];

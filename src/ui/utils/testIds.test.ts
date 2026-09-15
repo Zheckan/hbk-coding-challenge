@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import { defineTestIds } from "@/ui/utils/testIds";
 
 describe("defineTestIds", () => {

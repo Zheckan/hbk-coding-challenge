@@ -1,5 +1,6 @@
 import type { QueryClient } from "@tanstack/react-query";
 import { RouterProvider, type RouterProviderProps } from "react-router-dom";
+
 import { AppProviders } from "@/app/AppProviders";
 
 type AppProps = Readonly<{

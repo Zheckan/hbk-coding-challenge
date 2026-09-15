@@ -1,13 +1,14 @@
 import { skipToken, useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
+
 import { fetchAlerts } from "@/features/alerts/common/api/nws-alerts";
+import { getAlertsListRows } from "./logic/alerts-list-rows";
 import type { AlertsListFilters } from "./logic/alerts-list-state";
 import {
+  type AlertsSortKey,
   parseAlertsListState,
   serializeAlertsListState,
-  type AlertsSortKey,
 } from "./logic/alerts-list-state";
-import { getAlertsListRows } from "./logic/alerts-list-rows";
 import { AlertsView } from "./views/AlertsView";
 
 export function AlertsContainer() {

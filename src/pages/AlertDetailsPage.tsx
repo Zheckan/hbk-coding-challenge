@@ -1,4 +1,5 @@
 import { Navigate, useParams } from "react-router-dom";
+
 import { AlertDetailsContainer } from "@/features/alerts/details/AlertDetailsContainer";
 
 export function AlertDetailsPage() {

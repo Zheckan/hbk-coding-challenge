@@ -1,5 +1,6 @@
 import { http, passthrough } from "msw";
 import { describe, expect, it } from "vitest";
+
 import { server } from "@/test/server";
 import { fetchAlert, fetchAlerts } from "./nws-alerts";
 

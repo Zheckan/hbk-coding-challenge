@@ -1,8 +1,9 @@
-import { HttpResponse, delay, http } from "msw";
+import { delay, http, HttpResponse } from "msw";
 import { describe, expect, it } from "vitest";
-import { server } from "@/test/server";
+
 import listFixture from "@/test/fixtures/nws-alert-list.json";
-import { NwsApiError, fetchAlert, fetchAlerts } from "./nws-alerts";
+import { server } from "@/test/server";
+import { fetchAlert, fetchAlerts, NwsApiError } from "./nws-alerts";
 
 const detailFixture = listFixture.features[0];
 

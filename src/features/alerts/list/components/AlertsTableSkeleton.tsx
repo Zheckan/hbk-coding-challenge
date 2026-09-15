@@ -8,6 +8,7 @@ import {
   TableContainer,
   TableRow,
 } from "@mui/material";
+
 import { AlertsTableHead } from "./AlertsTableHead";
 
 const skeletonRows = [0, 1, 2, 3, 4] as const;

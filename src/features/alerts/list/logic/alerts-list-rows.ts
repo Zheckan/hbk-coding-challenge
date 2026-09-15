@@ -28,6 +28,7 @@ export function getAlertsListRows(
   state: AlertsListState,
 ): AlertsListRows {
   const search = state.search.toLocaleLowerCase();
+
   const matchingAlerts =
     search === ""
       ? alerts
@@ -44,6 +45,7 @@ export function getAlertsListRows(
     1,
     Math.ceil(sortedAlerts.length / ALERTS_PAGE_SIZE),
   );
+
   const page = Math.min(state.page, pageCount);
   const startIndex = (page - 1) * ALERTS_PAGE_SIZE;
 

@@ -117,6 +117,168 @@ Put only code owned by at least two child features in `common/`. Keep everything
 - Do not call feature-specific hooks deep inside presentational components unless the hook is intentionally reusable there.
 - When a module needs a replaceable hook or service, pass it explicitly as a dependency.
 
+### Feature master hook
+
+Each substantial feature should expose one master hook, conventionally named
+`useFeature`, as the public interface between the feature's logic and its
+presentation.
+
+The master hook:
+
+- Composes the feature's smaller hooks, queries, mutations, route state, and
+  application services.
+- Owns feature-level state, effects, derived data, and event handlers.
+- Converts infrastructure and domain results into values the view can render.
+- Returns an explicit, cohesive result containing view state, display data, and
+  callbacks.
+- Hides internal dependencies and implementation details from the container and
+  view.
+
+The container calls the master hook and passes its result to the feature view
+or components through props:
+
+```tsx
+function FeatureContainer() {
+  const feature = useFeature();
+
+  return <FeatureView {...feature} />;
+}
+```
+
+When the feature has multiple top-level states, the container may select the
+appropriate view while still sourcing the state and callbacks from the master
+hook:
+
+```tsx
+function FeatureContainer() {
+  const feature = useFeature();
+
+  if (feature.state.kind === "guest") {
+    return <GuestView onConnect={feature.onConnect} />;
+  }
+
+  return <FeatureView {...feature} />;
+}
+```
+
+The master hook is an orchestration boundary, not a dumping ground. It should
+delegate:
+
+- Pure calculations and transformations to named functions in `logic/`.
+- API calls and query definitions to data-access modules.
+- Cohesive stateful concerns to smaller specialized hooks.
+- Rendering and interaction markup to views and components.
+
+Presentational views and components should consume props supplied by the
+container. They should not reach back into the master hook or duplicate its
+feature orchestration. A child component may call a hook only when that hook is
+intentionally owned by the child, reusable UI infrastructure, or local
+presentation behavior.
+
+The preferred dependency direction is:
+
+```text
+Container
+   ↓ calls
+Feature master hook
+   ↓ composes
+Specialized hooks / domain logic / data access
+
+Container
+   ↓ passes props
+View
+   ↓ passes focused props
+Components
+```
+
+### Container responsibilities
+
+Containers are composition and orchestration boundaries. They do not need to be
+completely free of logic.
+
+Containers may:
+
+- Call feature and application hooks.
+- Connect route or URL state, queries, mutations, and global state.
+- Select which view to render for states such as guest, loading, error, invalid,
+  ready, and success.
+- Adapt hook results into view props.
+- Define small event handlers that coordinate dependencies already owned by the
+  container.
+- Add wrappers such as suspense boundaries when they belong to the feature
+  entry point.
+
+Containers should not:
+
+- Implement business rules, validation, sorting, filtering, calculations, or
+  substantial data transformations.
+- Contain data-access implementation details.
+- Accumulate enough state and callbacks that the feature workflow becomes hard
+  to understand or test.
+- Push feature-specific hooks into presentational views merely to make the
+  container shorter.
+
+When orchestration becomes substantial, extract it into a feature-level hook
+such as `logic/useFeature.ts`. That hook may own data fetching, state, effects,
+derived data, event handlers, and construction of a discriminated view state.
+The container can then call the hook, choose a view when necessary, and pass
+the result as props.
+
+Do not extract every local function mechanically:
+
+- Keep a small callback in the container when it only wires existing
+  dependencies together and remains easy to read.
+- Move reusable or independently testable pure behavior into a named module in
+  `logic/`.
+- Move cohesive stateful orchestration into a custom hook in `logic/`.
+- Keep query definitions or API calls in a data-access or API module when they
+  can be separated from rendering concerns.
+
+Prefer explicit discriminated states over combinations of optional flags:
+
+```ts
+type FeatureViewState =
+  | { kind: "invalid"; errors: string[] }
+  | { kind: "loading" }
+  | { kind: "error" }
+  | { kind: "ready"; items: Item[]; total: number };
+```
+
+This lets the container or feature hook map runtime state to one valid view
+state while keeping the view presentational.
+
+### Naming conventions
+
+Name files according to their primary responsibility or export:
+
+- React component files use PascalCase and normally match the exported
+  component, for example `FeatureView.tsx` or `FeatureContainer.tsx`.
+- Hook files use camelCase and match the exported hook, for example
+  `useFeature.ts`.
+- Files centered on one function use camelCase and match that function, for
+  example `parseFeatureState.ts`.
+- Generic configuration or multi-export modules may use kebab-case, for
+  example `query-client.ts`.
+- Folders use kebab-case.
+- Tests, stories, and Page Objects preserve the source file's casing and add a
+  descriptive suffix, for example `FeatureView.test.tsx`,
+  `FeatureView.stories.tsx`, or `Feature.PageObject.ts`.
+
+The `.tsx` extension only indicates that a file may contain JSX; it does not
+require PascalCase. Entrypoints and barrel modules such as `main.tsx` and
+`index.tsx` remain lowercase.
+
+Inside TypeScript code, use:
+
+- camelCase for functions, hooks, variables, and object properties.
+- PascalCase for React components, classes, and types.
+- UPPER_SNAKE_CASE for true module-level constants when that distinction adds
+  clarity.
+
+Prefer matching the filename to its primary export. For modules without one
+primary export, choose a descriptive filename and keep its style consistent
+with nearby files.
+
 ### Unified fix and verification command
 
 Provide a root-level `pnpm fix` command that:

@@ -1,11 +1,12 @@
 import { z } from "zod";
+
 import {
+  type Alert,
   ALERT_CERTAINTIES,
   ALERT_MESSAGE_TYPES,
   ALERT_SEVERITIES,
   ALERT_STATUSES,
   ALERT_URGENCIES,
-  type Alert,
   type AlertPage,
 } from "../model/alert";
 

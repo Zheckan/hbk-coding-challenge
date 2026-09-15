@@ -1,5 +1,6 @@
 import { screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
+
 import { renderApp } from "@/test/render-app";
 import { testIds } from "@/ui/utils/testIds";
 

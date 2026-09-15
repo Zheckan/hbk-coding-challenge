@@ -4,6 +4,7 @@ import "@fontsource/roboto/latin-500.css";
 import "@fontsource/roboto/latin-700.css";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+
 import { App } from "@/app/App";
 import { createAppQueryClient } from "@/app/query-client";
 import { createAppRouter } from "@/app/router";

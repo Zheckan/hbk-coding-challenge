@@ -3,6 +3,7 @@ import {
   Navigate,
   type RouteObject,
 } from "react-router-dom";
+
 import { AppLayout } from "@/app/AppLayout";
 import { NotFoundPage } from "@/app/NotFoundPage";
 import { AlertDetailsPage } from "@/pages/AlertDetailsPage";

@@ -1,4 +1,5 @@
 import { TableCell, TableHead, TableRow, TableSortLabel } from "@mui/material";
+
 import type {
   AlertsSortDirection,
   AlertsSortKey,

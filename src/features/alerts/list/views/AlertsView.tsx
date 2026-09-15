@@ -1,8 +1,9 @@
 import { Alert as MuiAlert, Stack, Typography } from "@mui/material";
+
 import type { Alert } from "@/features/alerts/common/model/alert";
 import { AlertsFilters } from "../components/AlertsFilters";
-import { AlertsTableSkeleton } from "../components/AlertsTableSkeleton";
 import { AlertsTable } from "../components/AlertsTable";
+import { AlertsTableSkeleton } from "../components/AlertsTableSkeleton";
 import type {
   AlertsDateBounds,
   AlertsListFilters,

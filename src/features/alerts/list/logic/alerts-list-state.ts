@@ -73,6 +73,7 @@ export function parseAlertsListState(
   };
   const state = parseState(searchParams);
   const errors: string[] = [];
+
   const issuedFrom = parseSelectedDate({
     label: "Issued from",
     value: state.issuedFrom,

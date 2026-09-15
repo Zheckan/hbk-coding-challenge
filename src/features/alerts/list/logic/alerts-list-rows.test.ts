@@ -1,8 +1,9 @@
 import { describe, expect, it } from "vitest";
+
 import { parseAlertCollection } from "@/features/alerts/common/api/nws-alerts.schema";
 import listFixture from "@/test/fixtures/nws-alert-list.json";
-import type { AlertsListState } from "./alerts-list-state";
 import { getAlertsListRows } from "./alerts-list-rows";
+import type { AlertsListState } from "./alerts-list-state";
 
 const alerts = parseAlertCollection(listFixture).alerts;
 const firstAlert = alerts[0];
