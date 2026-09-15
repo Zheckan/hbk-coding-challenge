@@ -71,7 +71,7 @@ export function AlertsTable({
           '& .MuiTableCell-root': {
             px: { xs: 1, sm: 2 },
             py: 1.5,
-            verticalAlign: 'top',
+            verticalAlign: 'middle',
           },
         }}
       >
@@ -138,7 +138,9 @@ export function AlertsTable({
                   minWidth: 280,
                 }}
               >
-                {alert.headline ?? 'No headline provided'}
+                <ClampedTableText>
+                  {alert.headline ?? 'No headline provided'}
+                </ClampedTableText>
               </TableCell>
               <TableCell
                 sx={{
@@ -146,7 +148,7 @@ export function AlertsTable({
                   minWidth: 220,
                 }}
               >
-                {alert.affectedArea}
+                <ClampedTableText>{alert.affectedArea}</ClampedTableText>
               </TableCell>
               <TableCell
                 sx={{
@@ -217,6 +219,22 @@ export function AlertsTable({
 
 function AlertTime({ dateTime }: Readonly<{ dateTime: string }>) {
   return <time dateTime={dateTime}>{formatAlertDate(dateTime)}</time>
+}
+
+function ClampedTableText({ children }: Readonly<{ children: string }>) {
+  return (
+    <Box
+      component="span"
+      sx={{
+        display: '-webkit-box',
+        overflow: 'hidden',
+        WebkitBoxOrient: 'vertical',
+        WebkitLineClamp: 3,
+      }}
+    >
+      {children}
+    </Box>
+  )
 }
 
 function DetailsArrowIcon() {
