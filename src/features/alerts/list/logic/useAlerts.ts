@@ -50,6 +50,9 @@ export type AlertsViewState =
         isUpdating: boolean
       } & AlertsPaginationState
     >
+    | Readonly<{
+        kind: 'asdfkbakjbf'
+      }>
 
 type AlertsPaginationState = Readonly<{
   hasMore: boolean
@@ -180,6 +183,8 @@ export function useAlerts(): UseAlertsResult {
             ...paginationState,
           }
   }
+
+  state.kind = 'asd'
 
   return {
     state,

@@ -53,7 +53,7 @@ export function getAlertsListRows(
 function compareAlerts(left: Alert, right: Alert, sort: AlertsSortKey): number {
   switch (sort) {
     case 'severity':
-      return severityOrder[left.severity] - severityOrder[right.severity]
+      return severityOrder[right.severity] - severityOrder[left.severity]
     case 'event':
       return left.event.localeCompare(right.event)
     case 'affectedArea':

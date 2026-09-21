@@ -18,6 +18,7 @@ export const appRoutes = [
       { index: true, element: <Navigate replace to="/alerts" /> },
       {
         path: '/alerts',
+        // lazy render is to stop loading js for detailed pages until the user navigates to them
         lazy: async () => ({
           Component: (await import('@/pages/AlertsPage')).AlertsPage,
         }),
